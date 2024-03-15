@@ -11,9 +11,17 @@ internal static class Converter
     /// <returns>A PersianDateTime object representing the converted Persian date.</returns>
     internal static PersianDateTime ConvertToPersian(DateTime date)
     {
+        // Convert the Gregorian date to Julian Day Number
         var jd = GregorianTojulianDay(date.Year, date.Month, date.Day);
-        var dateOnly = JulianDayToPersian(jd);
-        return new PersianDateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day);
+
+        // Convert the Julian Day Number to a Persian date
+        var persianDate = JulianDayToPersian(jd);
+
+        // Get the progress of the year for the Persian date
+        var (dayOfYear, daysRemainingInYear) = GetYearProgress(persianDate.Year, date);
+
+        persianDate.SetYearProgress(dayOfYear, daysRemainingInYear);
+        return persianDate;
     }
 
     internal static DateTime ConvertToGregorian(int year, int month, int day, int hour, int minute, int second, int millisecond = 0)
@@ -46,7 +54,7 @@ internal static class Converter
     /// </summary>
     /// <param name="julianDay">The Julian Day number to be converted.</param>
     /// <returns>A PersianDateOnly object representing the converted Persian date.</returns>
-    private static PersianDateOnly JulianDayToPersian(double julianDay)
+    private static PersianDateTime JulianDayToPersian(double julianDay)
     {
         julianDay = Math.Floor(julianDay) + 0.5;
 
@@ -65,7 +73,7 @@ internal static class Converter
         var month = dayOfYear <= DaysInHalfYear ? (int)Math.Ceiling(dayOfYear / 31) : (int)Math.Ceiling((dayOfYear - 6) / 30);
         var day = (int)(julianDay - PersianToJulianDay(year, month, 1)) + 1;
 
-        return new PersianDateOnly(year, month, day);
+        return new PersianDateTime(year, month, day);
     }
 
     /// <summary>
@@ -154,4 +162,26 @@ internal static class Converter
 
         return (year, month, day);
     }
+
+    /// <summary>
+    /// Calculates the progress of the year in the Persian calendar for a given date.
+    /// </summary>
+    /// <param name="year">The year in the Persian calendar.</param>
+    /// <param name="date">The date for which to calculate the year progress.</param>
+    /// <returns>A tuple containing the day of the year and the number of days remaining in the year.</returns>
+    public static (int DayOfYear, int DaysRemainingInYear) GetYearProgress(int year, DateTime date)
+    {
+        // Calculate the JDN (Julian Day Number) for the start and end of the year
+        var jdnStartOfYear = PersianToJulianDay(year, 1, 1);
+        var jdnEndOfYear = PersianToJulianDay(year + 1, 1, 1) - 1;
+
+        // Calculate the JDN for the given date
+        var jdn = GregorianTojulianDay(date.Year, date.Month, date.Day);
+
+        var DayOfYear = (int)(jdn - jdnStartOfYear + 1);
+        var DaysRemainingInYear = (int)(jdnEndOfYear - jdn);
+
+        return (DayOfYear, DaysRemainingInYear);
+    }
+
 }

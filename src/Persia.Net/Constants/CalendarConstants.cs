@@ -205,4 +205,19 @@ internal class CalendarConstants
     /// The offset used in the calculation of the month from a Julian day number.
     /// </summary>
     internal const int MonthCalculationOffset = 373;
+
+    /// <summary>
+    /// The length of a complete grand cycle in the Persian calendar, consisting of 2820 years.
+    /// </summary>
+    internal const int PersianCalendarGrandCycle = 2820;
+
+    /// <summary>
+    /// The number of years in the smaller cycles within the 2820-year grand cycle of the Persian calendar.
+    /// </summary>
+    internal const int YearsInSmallCycle = 120;
+
+    /// <summary>
+    /// The index of the last year in the smaller 120-year cycle of the Persian calendar.
+    /// </summary>
+    internal const int LastYearInSmallCycleIndex = 119;
 }
