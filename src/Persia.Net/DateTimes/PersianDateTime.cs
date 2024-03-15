@@ -1,4 +1,5 @@
 ﻿using Persia.Net.Words;
+using static Persia.Net.Constants.CalendarConstants;
 using static Persia.Net.Constants.PersianCalendarConstants;
 
 namespace Persia.Net.DateTimes;
@@ -58,18 +59,17 @@ public class PersianDateTime(int year, int month, int day)
     /// <summary>
     /// Gets a value indicating whether the current Persian year is a leap year.
     /// </summary>
-    public bool IsLeapYear => GetLeapYearStatus();
+    public bool IsLeapYear { get; private set; }
 
     /// <summary>
-    /// Gets the cycle number within the 2820-year Persian calendar cycle.
+    /// Gets the number of days that have passed since the beginning of the current year in the Persian calendar.
     /// </summary>
-    public int CycleNumber { get; private set; }
+    public int DayOfYear { get; private set; }
 
     /// <summary>
-    /// Gets the length of the current cycle (either 84 or 37 years) within the 2820-year cycle.
+    /// Gets the number of days remaining until the end of the current year in the Persian calendar.
     /// </summary>
-    public int CycleLength { get; private set; }
-
+    public int DaysRemainingInYear { get; private set; }
 
     internal PersianDateTime SetTime(TimeOnly time)
     {
@@ -88,23 +88,46 @@ public class PersianDateTime(int year, int month, int day)
         return this;
     }
 
-    private bool GetLeapYearStatus()
+    internal PersianDateTime GetLeapYearStatus()
     {
         // Group years into cycles of 2820 years each
-        CycleNumber = Year / 2820;
-        var yearInCycle = Year % 2820;
+        IsLeapYear = CheckLeapYear(Year);
+        return this;
+    }
 
-        // Determine the cycle length (84 cycles of 29 + 33 + 33 + 33 years, and 4 cycles of 29 + 33 + 33 + 37 years)
-        int[] cycleLengths = [29, 33, 33, 33, 29, 33, 33, 33];
-        CycleLength = cycleLengths[yearInCycle / 120] + (yearInCycle % 120 == 119 ? 37 : 0);
+    internal PersianDateTime SetYearProgress(int dayOfYear, int daysRemainingInYear)
+    {
+        DayOfYear = dayOfYear;
+        DaysRemainingInYear = daysRemainingInYear;
+        return this;
+    }
+
+    /// <summary>
+    /// Determines whether the specified year is a leap year in the Persian calendar.
+    /// </summary>
+    /// <param name="year">The year to check.</param>
+    /// <returns>true if the specified year is a leap year; otherwise, false.</returns>
+    public static bool CheckLeapYear(int year)
+    {
+        // Group years into cycles of 2820 years each
+        var yearInCycle = year % PersianCalendarGrandCycle;
 
         // Calculate the ordinal number of the year within the cycle
-        var ordinalNumber = yearInCycle % 120;
+        var ordinalNumber = yearInCycle % YearsInSmallCycle;
 
         // Check if the year is evenly divisible by 4
         var isLeapYear = ordinalNumber % 4 == 0;
 
         return isLeapYear;
+    }
+
+    internal PersianDateTime GetYearProgress(DateTime date)
+    {
+        var firstDay = ToDateTime(Year, 1, 1);
+        DayOfYear = (date - firstDay).Days;
+        var lastDay = ToDateTime(Year + 1, 1, 1).AddDays(-1);
+        DaysRemainingInYear = (lastDay - date).Days;
+        return this;
     }
 
     /// <summary>

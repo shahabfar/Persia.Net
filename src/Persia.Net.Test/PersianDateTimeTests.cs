@@ -133,5 +133,31 @@ namespace Persia.Net.Test
             Assert.Equal(new DateOnly(2024, 03, 20), dateOnly);
         }
 
+        [Fact]
+        public void Test_IsGivenPersianYearIsLeap_ReturnCorrectDate()
+        {
+            // Arrange
+            const int persianYear = 1403;
+
+            // Act
+            var leapStatus = PersianDateTime.CheckLeapYear(persianYear);
+
+            // Assert
+            Assert.Equal(false, leapStatus);
+        }
+
+        [Fact]
+        public void Test_GetDayOfYearAndDaysRamainingInYear_ReturnCorrectNumbers()
+        {
+            // Arrange
+            var date = new DateTime(2024, 03, 19);
+
+            // Act
+            var persianDate = date.ToPersianDateTime();
+
+            // Assert
+            Assert.Equal(365, persianDate.DayOfYear);
+            Assert.Equal(0, persianDate.DaysRemainingInYear);
+        }
     }
 }
