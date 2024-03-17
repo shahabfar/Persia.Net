@@ -84,7 +84,7 @@ namespace Persia.Net.Test
             var date = new DateTime(2024, 03, 10);
 
             // Act
-            var convertedDateString = date.ToPersianDateTime().ToLongPersianWeekday();
+            var convertedDateString = date.ToPersianDateTime().ToLongPersianOrdinalWords();
 
             // Assert
             Assert.Equal("یکشنبه بیستم اسفند ۱۴۰۲", convertedDateString);
@@ -159,5 +159,19 @@ namespace Persia.Net.Test
             Assert.Equal(365, persianDate.DayOfYear);
             Assert.Equal(0, persianDate.DaysRemainingInYear);
         }
+
+        //[Fact]
+        //public void Test_HumanizePersianDateTimePassed_ReturnCorrectText()
+        //{
+        //    // Arrange
+        //    var date = new DateTime(2022, 03, 21);
+
+        //    // Act
+        //    //var humanizedPersian = date.HumanizePersianDateTimePassed(6);
+        //    var humanizedPersian = date.HumanizePersianDateTimePassed(TimeUnit.Seconds);
+
+        //    // Assert
+        //    Assert.Equal("‫۱۱ ماه و ۳۶۲ روز و ۲ ساعت پیش‬", humanizedPersian);
+        //}
     }
 }

@@ -148,6 +148,8 @@ public class PersianDateTime(int year, int month, int day)
         return ($"{Year}/{Month:D2}/{Day:D2}").ToPersianString();
     }
 
+    //ToOrdinalWords
+    //ToClockNotation
     /// <summary>
     /// Converts the date to a string in the Persian format with Year and Day in digit and Month in word.
     /// </summary>
@@ -190,7 +192,7 @@ public class PersianDateTime(int year, int month, int day)
     /// Converts the date to a string in the Persian format with Year in digit and Day and Month in words as well as weekday name.
     /// </summary>
     /// <returns>برای مثال, یکشنبه بیستم اسفند ۱۴۰۲</returns>
-    public string ToLongPersianWeekday()
+    public string ToLongPersianOrdinalWords()
     {
         return $"{DayOfWeekName} {Days[Day - 1]} {Months[Month - 1]} {Year.ToPersianString()}";
     }
@@ -234,7 +236,7 @@ public class PersianDateTime(int year, int month, int day)
     /// <returns>A DateOnly object representing the converted date.</returns>
     public static DateOnly ToDateOnly(int year, int month, int day)
     {
-        return DateOnly.FromDateTime(Converter.ConvertToGregorian(year, month, day, 0, 0, 0, 0));
+        return DateOnly.FromDateTime(Converter.ConvertToGregorian(year, month, day, 0, 0, 0));
     }
 
 }
