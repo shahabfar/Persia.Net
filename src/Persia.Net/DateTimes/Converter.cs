@@ -21,6 +21,10 @@ internal static class Converter
         var (dayOfYear, daysRemainingInYear) = GetYearProgress(persianDate.Year, date);
 
         persianDate.SetYearProgress(dayOfYear, daysRemainingInYear);
+        var daysInMonth = GetDaysInPersianMonth(persianDate.Year, persianDate.Month);
+        persianDate.SetDaysInMonth(daysInMonth);
+        var ticks = CalculatePersianTicks(persianDate);
+        persianDate.SetTicks(ticks);
         return persianDate;
     }
 
@@ -182,6 +186,31 @@ internal static class Converter
         var DaysRemainingInYear = (int)(jdnEndOfYear - jdn);
 
         return (DayOfYear, DaysRemainingInYear);
+    }
+
+    private static int GetDaysInPersianMonth(int year, int month)
+    {
+        // Calculate the Julian day of the first day of the current month
+        var firstDayOfCurrentMonth = PersianToJulianDay(year, month, 1);
+
+        // Calculate the Julian day of the first day of the next month
+        var firstDayOfNextMonth = month == 12 ? PersianToJulianDay(year + 1, 1, 1) : PersianToJulianDay(year, month + 1, 1);
+
+        return (int)(firstDayOfNextMonth - firstDayOfCurrentMonth);
+    }
+
+    private static long CalculatePersianTicks(PersianDateTime dtPersian)
+    {
+        // Convert the Persian date to a Julian Day number
+        var julianDay = PersianToJulianDay(dtPersian.Year, dtPersian.Month, dtPersian.Day);
+
+        // Calculate the number of days since the start of the Persian calendar
+        var daysSincePersianEpoch = julianDay - PersianEpoch;
+
+        // Convert the number of days to ticks (1 day = 24 hours = 1440 minutes = 86400 seconds = 864000000000 ticks)
+        var ticks = (long)(daysSincePersianEpoch * 864000000000);
+
+        return ticks;
     }
 
 }
