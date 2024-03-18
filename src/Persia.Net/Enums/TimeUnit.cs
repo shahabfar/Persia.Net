@@ -7,6 +7,5 @@ public enum TimeUnit
     Days,
     Hours,
     Minutes,
-    Seconds,
-    None
+    Seconds
 }

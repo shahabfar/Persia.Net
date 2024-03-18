@@ -1,4 +1,5 @@
 ﻿using Persia.Net.DateTimes;
+using Persia.Net.Enums;
 
 namespace Persia.Net.Test
 {
@@ -160,18 +161,46 @@ namespace Persia.Net.Test
             Assert.Equal(0, persianDate.DaysRemainingInYear);
         }
 
-        //[Fact]
-        //public void Test_HumanizePersianDateTimePassed_ReturnCorrectText()
-        //{
-        //    // Arrange
-        //    var date = new DateTime(2022, 03, 21);
+        [Fact]
+        public void Test_HumanizePersianDateTimePassed_ReturnCorrectText()
+        {
+            // Arrange
+            var date = new DateTime(2023, 12, 21);
 
-        //    // Act
-        //    //var humanizedPersian = date.HumanizePersianDateTimePassed(6);
-        //    var humanizedPersian = date.HumanizePersianDateTimePassed(TimeUnit.Seconds);
+            // Act
+            //var humanizedPersian = date.HumanizePersianDateTimePassed(6);
+            var humanizedPersian = date.HumanizePassedPersianDateTime(TimeUnit.Days);
 
-        //    // Assert
-        //    Assert.Equal("‫۱۱ ماه و ۳۶۲ روز و ۲ ساعت پیش‬", humanizedPersian);
-        //}
+            // Assert
+            Assert.Equal("‫۱۱ ماه و ۳۶۲ روز و ۲ ساعت پیش‬", humanizedPersian);
+        }
+
+        [Fact]
+        public void Test_GetNextCurrentPreviousDayWeekMonth_ReturnCorrectDate()
+        {
+            // Arrange
+            var date = new DateTime(2024, 03, 19);
+            DateTime? nullableDate = new DateTime(2024, 03, 19);
+
+            // Act
+            var nextDay = nullableDate.NextPersianDay();
+            var prevDay = date.PreviousPersianDay();
+            var currentWeek = date.CurrentPersianWeek();
+            var nextWeek = date.NextPersianWeek();
+            var previousWeek = date.PreviousPersianWeek();
+            var currentMonth = date.CurrentPersianMonth();
+            var nextMonth = date.NextPersianMonth();
+            var previousMonth = date.PreviousPersianMonth();
+
+            // Assert
+            Assert.Equal(new PersianDateTime(1403, 01, 01), nextDay);
+            Assert.Equal(new PersianDateTime(1402, 12, 28), prevDay);
+            Assert.Equal(new PersianDateTime(1403, 01, 01), currentWeek[4]);
+            Assert.Equal(new PersianDateTime(1403, 01, 04), nextWeek[0]);
+            Assert.Equal(new PersianDateTime(1402, 12, 25), previousWeek[6]);
+            Assert.Equal(new PersianDateTime(1402, 12, 26), currentMonth[25]);
+            Assert.Equal(new PersianDateTime(1403, 01, 03), nextMonth[2]);
+            Assert.Equal(new PersianDateTime(1402, 11, 30), previousMonth[29]);
+        }
     }
 }

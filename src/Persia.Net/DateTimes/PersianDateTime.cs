@@ -4,22 +4,22 @@ using static Persia.Net.Constants.PersianCalendarConstants;
 
 namespace Persia.Net.DateTimes;
 
-public class PersianDateTime(int year, int month, int day)
+public class PersianDateTime : IEquatable<PersianDateTime>
 {
     /// <summary>
     /// Gets the year component of the date.
     /// </summary>
-    public int Year { get; } = year;
+    public int Year { get; private set; }
 
     /// <summary>
     /// Gets the month component of the date.
     /// </summary>
-    public int Month { get; } = month;
+    public int Month { get; private set; }
 
     /// <summary>
     /// Gets the day component of the date.
     /// </summary>
-    public int Day { get; } = day;
+    public int Day { get; private set; }
 
     /// <summary>
     /// Gets the hour component of the time.
@@ -52,6 +52,16 @@ public class PersianDateTime(int year, int month, int day)
     public int DayOfWeek { get; private set; }
 
     /// <summary>
+    /// Gets the days of current month.
+    /// </summary>
+    public int DaysInMonth { get; private set; }
+
+    /// <summary>
+    /// Gets the name of current month.
+    /// </summary>
+    public string MonthName { get; private set; } = string.Empty;
+
+    /// <summary>
     /// Gets the day name of the week in Persian Calendar.
     /// </summary>
     public string DayOfWeekName { get; private set; } = string.Empty;
@@ -71,13 +81,107 @@ public class PersianDateTime(int year, int month, int day)
     /// </summary>
     public int DaysRemainingInYear { get; private set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PersianDateTime"/> class.
+    /// </summary>
+    /// <param name="year">The year component of the Persian date.</param>
+    /// <param name="month">The month component of the Persian date.</param>
+    /// <param name="day">The day component of the Persian date.</param>
+    /// <param name="time">The optional parameter for the time of the given day.</param>
+    public PersianDateTime(int year, int month, int day, TimeOnly time = default)
+    {
+        var dt = ToDateTime(year, month, day);
+        var dtPersian = dt.ToPersianDateTime();
+        Year = dtPersian.Year;
+        Month = dtPersian.Month;
+        Day = dtPersian.Day;
+        DayOfWeek = dtPersian.DayOfWeek;
+        DaysInMonth = dtPersian.DaysInMonth;
+        MonthName = dtPersian.MonthName;
+        DayOfWeekName = dtPersian.DayOfWeekName;
+        IsLeapYear = dtPersian.IsLeapYear;
+        DayOfYear = dtPersian.DayOfYear;
+        DaysRemainingInYear = dtPersian.DaysRemainingInYear;
+        Hour = time.Hour;
+        Minute = time.Minute;
+        Second = time.Second;
+        Millisecond = time.Millisecond;
+    }
+
+    internal PersianDateTime(int year, int month, int day)
+    {
+        Year = year;
+        Month = month;
+        Day = day;
+    }
+
+    public bool Equals(PersianDateTime other)
+    {
+        if (other is null)
+            return false;
+
+        return Year == other.Year && Month == other.Month && Day == other.Day;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj))
+            return false;
+
+        if (ReferenceEquals(this, obj))
+            return true;
+
+        if (obj.GetType() != GetType())
+            return false;
+
+        return Equals((PersianDateTime)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            var hashCode = Year;
+            hashCode = (hashCode * 397) ^ Month;
+            hashCode = (hashCode * 397) ^ Day;
+            return hashCode;
+        }
+    }
+
+    public static bool operator ==(PersianDateTime left, PersianDateTime right)
+    {
+        if (ReferenceEquals(left, right))
+            return true;
+
+        if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            return false;
+
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(PersianDateTime left, PersianDateTime right)
+    {
+        return !(left == right);
+    }
+
+    internal PersianDateTime SetDay(int day)
+    {
+        Day = day;
+        return this;
+    }
+
     internal PersianDateTime SetTime(TimeOnly time)
     {
         Hour = time.Hour;
         Minute = time.Minute;
         Second = time.Second;
         Millisecond = time.Millisecond;
-        Ticks = time.Ticks;
+        return this;
+    }
+
+    internal PersianDateTime SetTicks(long ticks)
+    {
+        Ticks = ticks;
         return this;
     }
 
@@ -85,6 +189,13 @@ public class PersianDateTime(int year, int month, int day)
     {
         DayOfWeek = (dayOfWeek + 1) % 7;
         DayOfWeekName = Weekdays[DayOfWeek];
+        return this;
+    }
+
+    internal PersianDateTime SetDaysInMonth(int daysInMonth)
+    {
+        DaysInMonth = daysInMonth;
+        MonthName = Months[Month - 1];
         return this;
     }
 

@@ -11,6 +11,7 @@ internal class CalendarConstants
     ///     The Julian Day number of the start of the Persian calendar, which is March 21, 622.
     /// </summary>
     internal const double PersianEpoch = 1948320.5;
+
     /// <summary>
     ///     The Julian Day number of the start of the Islamic calendar, which is July 16, 622.
     /// </summary>

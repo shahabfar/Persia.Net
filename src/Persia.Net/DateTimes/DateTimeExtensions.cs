@@ -8,19 +8,6 @@ public static class DateTimeExtensions
     /// <summary>
     /// Converts a Gregorian DateTime to a PersianDateTime.
     /// </summary>
-    /// <param name="date">The Gregorian DateTime to convert (nullable).</param>
-    /// <returns>A PersianDateTime representing the converted date.</returns>
-    public static PersianDateTime ToPersianDateTime(this DateTime? date)
-    {
-        if (!date.HasValue)
-            throw new ArgumentNullException(nameof(date));
-
-        return date.Value.ToPersianDateTime();
-    }
-
-    /// <summary>
-    /// Converts a Gregorian DateTime to a PersianDateTime.
-    /// </summary>
     /// <param name="date">The Gregorian DateTime to convert.</param>
     /// <returns>A PersianDateTime representing the converted date.</returns>
     public static PersianDateTime ToPersianDateTime(this DateTime date)
@@ -34,24 +21,10 @@ public static class DateTimeExtensions
     /// <summary>
     /// Converts the time difference between the current date and the provided date into a human-readable format.
     /// </summary>
-    /// <param name="dateTime">The date to calculate the date time difference from. If null, an ArgumentNullException is thrown.</param>
-    /// <param name="partsToPrint">The number of time parts to include in the output string (e.g., if 3, it might print years, months, and days).</param>
-    /// <returns>بعنوان مثال: ۱۱ ماه و ۳۶۲ روز و ۲ ساعت پیش</returns>
-    public static string HumanizePersianDateTimePassed(this DateTime? dateTime, int partsToPrint = 3)
-    {
-        if (!dateTime.HasValue)
-            throw new ArgumentNullException(nameof(dateTime));
-
-        return dateTime.Value.HumanizePersianDateTimePassed(partsToPrint);
-    }
-
-    /// <summary>
-    /// Converts the time difference between the current date and the provided date into a human-readable format.
-    /// </summary>
     /// <param name="dateTime">The date to calculate the date time difference from.</param>
     /// <param name="partsToPrint">The number of time parts to include in the output string (e.g., if 3, it might print years, months, and days).</param>
     /// <returns>بعنوان مثال: ۱۱ ماه و ۳۶۲ روز و ۲ ساعت پیش</returns>
-    public static string HumanizePersianDateTimePassed(this DateTime dateTime, int partsToPrint = 3)
+    public static string HumanizePassedPersianDateTime(this DateTime dateTime, int partsToPrint = 3)
     {
         var now = DateTime.Now;
         var timeSpan = now - dateTime;
@@ -126,24 +99,10 @@ public static class DateTimeExtensions
     /// <summary>
     /// Converts the time difference between the current date and the provided date into a human-readable format in Persian.
     /// </summary>
-    /// <param name="dateTime">The date to calculate the date time difference from. If null, an ArgumentNullException is thrown.</param>
-    /// <param name="timeUnit">The unit of time to be used for the calculation. It calculates the total of the given unit time and prints only that unit.</param>
-    /// <returns>A string that represents the time difference in total calculated of given unit time in a human-readable format in Persian.</returns>
-    public static string HumanizePersianDateTimePassed(this DateTime? dateTime, TimeUnit timeUnit)
-    {
-        if (!dateTime.HasValue)
-            throw new ArgumentNullException(nameof(dateTime));
-
-        return dateTime.Value.HumanizePersianDateTimePassed(timeUnit);
-    }
-
-    /// <summary>
-    /// Converts the time difference between the current date and the provided date into a human-readable format in Persian.
-    /// </summary>
     /// <param name="dateTime">The date to calculate the time difference from.</param>
     /// <param name="timeUnit">The unit of time to be used for the calculation. It calculates the total of the given unit time and prints only that unit.</param>
-    /// <returns>A string that represents the time difference in total calculated of given unit time in a human-readable format in Persian.</returns>
-    public static string HumanizePersianDateTimePassed(this DateTime dateTime, TimeUnit timeUnit)
+    /// <returns>بعنوان مثال: ۲ روز پیش</returns>
+    public static string HumanizePassedPersianDateTime(this DateTime dateTime, TimeUnit timeUnit)
     {
         var now = DateTime.Now;
         var dtPersianNow = ToPersianDateTime(now);
@@ -183,4 +142,170 @@ public static class DateTimeExtensions
         return (result + " پیش").ToPersianString(true);
     }
 
+    /// <summary>
+    /// Calculates the next day from the given date and returns it as a PersianDateTime.
+    /// </summary>
+    /// <param name="date">The date to calculate the next day from.</param>
+    /// <returns>A PersianDateTime representing the next day.</returns>
+    public static PersianDateTime NextPersianDay(this DateTime date)
+    {
+        return Converter.ConvertToPersian(date.AddDays(1))
+            .SetTime(TimeOnly.FromTimeSpan(date.TimeOfDay))
+            .SetDayOfWeek((int)date.DayOfWeek)
+            .GetLeapYearStatus();
+    }
+
+    /// <summary>
+    /// Calculates the Previous day from the given date and returns it as a PersianDateTime.
+    /// </summary>
+    /// <param name="date">The date to calculate the Previous day from.</param>
+    /// <returns>A PersianDateTime representing the Previous day.</returns>
+    public static PersianDateTime PreviousPersianDay(this DateTime date)
+    {
+        return Converter.ConvertToPersian(date.AddDays(-1))
+            .SetTime(TimeOnly.FromTimeSpan(date.TimeOfDay))
+            .SetDayOfWeek((int)date.DayOfWeek)
+            .GetLeapYearStatus();
+    }
+
+    /// <summary>
+    /// Calculates the dates of the current Persian week for a given date.
+    /// </summary>
+    /// <param name="date">The date for which to calculate the current Persian week.</param>
+    /// <returns>An array of <see cref="PersianDateTime"/> objects representing each day of the current Persian week.</returns>
+    /// <remarks>
+    /// This method calculates the start of the week based on the Persian calendar, where the week starts on Saturday. 
+    /// It then creates a new <see cref="PersianDateTime"/> for each day of the week, starting from the start of the week.
+    /// </remarks>
+    public static PersianDateTime[] CurrentPersianWeek(this DateTime date)
+    {
+        // Here the week starts with Saturday (DayOfWeek.Saturday is 6 in .NET)
+        var startOfWeek = date.AddDays(-((int)date.DayOfWeek + 1) % 7);
+        var week = new PersianDateTime[7];
+
+        for (var i = 0; i < 7; i++)
+            week[i] = startOfWeek.AddDays(i).ToPersianDateTime();
+
+        return week;
+    }
+
+    /// <summary>
+    /// Calculates the dates of the next Persian week for a given date.
+    /// </summary>
+    /// <param name="date">The date for which to calculate the next Persian week.</param>
+    /// <returns>An array of <see cref="PersianDateTime"/> objects representing each day of the next Persian week.</returns>
+    /// <remarks>
+    /// This method calculates the start of the next week based on the Persian calendar, where the week starts on Saturday. 
+    /// It then creates a new <see cref="PersianDateTime"/> for each day of the week, starting from the start of the next week.
+    /// </remarks>
+    public static PersianDateTime[] NextPersianWeek(this DateTime date)
+    {
+        // Here the week starts with Saturday (DayOfWeek.Saturday is 6 in .NET)
+        var startOfNextWeek = date.AddDays(-((int)date.DayOfWeek + 1) % 7 + 7);
+        var week = new PersianDateTime[7];
+
+        for (var i = 0; i < 7; i++)
+            week[i] = startOfNextWeek.AddDays(i).ToPersianDateTime();
+
+        return week;
+    }
+
+    /// <summary>
+    /// Calculates the dates of the Previous Persian week for a given date.
+    /// </summary>
+    /// <param name="date">The date for which to calculate the Previous Persian week.</param>
+    /// <returns>An array of <see cref="PersianDateTime"/> objects representing each day of the Previous Persian week.</returns>
+    /// <remarks>
+    /// This method calculates the start of the Previous week based on the Persian calendar, where the week starts on Saturday. 
+    /// It then creates a new <see cref="PersianDateTime"/> for each day of the week, starting from the start of the Previous week.
+    /// </remarks>
+    public static PersianDateTime[] PreviousPersianWeek(this DateTime date)
+    {
+        // Here the week starts with Saturday (DayOfWeek.Saturday is 6 in .NET)
+        var startOfNextWeek = date.AddDays(-((int)date.DayOfWeek + 1) % 7 - 7);
+        var week = new PersianDateTime[7];
+
+        for (var i = 0; i < 7; i++)
+            week[i] = startOfNextWeek.AddDays(i).ToPersianDateTime();
+
+        return week;
+    }
+
+    /// <summary>
+    /// Calculates the dates of the current Persian month for a given date.
+    /// </summary>
+    /// <param name="date">The date for which to calculate the current Persian month.</param>
+    /// <returns>An array of <see cref="PersianDateTime"/> objects representing each day of the current Persian month.</returns>
+    /// <remarks>
+    /// This method first converts the given date to a Persian date. It then creates a new <see cref="PersianDateTime"/> for each day of the month, starting from the first day of the month.
+    /// </remarks>
+    public static PersianDateTime[] CurrentPersianMonth(this DateTime date)
+    {
+        var dtPersian = ToPersianDateTime(date);
+        var time = TimeOnly.FromTimeSpan(date.TimeOfDay);
+
+        // Create an array to hold the days of the current month
+        var month = new PersianDateTime[dtPersian.DaysInMonth];
+
+        for (var i = 0; i < dtPersian.DaysInMonth; i++)
+            month[i] = new PersianDateTime(dtPersian.Year, dtPersian.Month, i + 1, time);
+
+        return month;
+    }
+
+    /// <summary>
+    /// Calculates the dates of the next Persian month for a given date.
+    /// </summary>
+    /// <param name="date">The date for which to calculate the next Persian month.</param>
+    /// <returns>An array of <see cref="PersianDateTime"/> objects representing each day of the next Persian month.</returns>
+    /// <remarks>
+    /// This method first converts the given date to a Persian date. It then creates a new <see cref="PersianDateTime"/> for each day of the next month, starting from the first day of the next month.
+    /// </remarks>
+    public static PersianDateTime[] NextPersianMonth(this DateTime date)
+    {
+        var dtPersian = date.ToPersianDateTime();
+        var time = TimeOnly.FromTimeSpan(date.TimeOfDay);
+
+        // Add one month to the PersianDateTime
+        dtPersian = dtPersian.Month + 1 == 13
+            ? new PersianDateTime(dtPersian.Year + 1, 1, 1, time)
+            : new PersianDateTime(dtPersian.Year, dtPersian.Month + 1, 1, time);
+
+        // Create an array to hold the days of the next month
+        var nextMonth = new PersianDateTime[dtPersian.DaysInMonth];
+
+        for (var i = 0; i < dtPersian.DaysInMonth; i++)
+            nextMonth[i] = new PersianDateTime(dtPersian.Year, dtPersian.Month, i + 1, time);
+
+        return nextMonth;
+    }
+
+    /// <summary>
+    /// Calculates the dates of the Previous Persian month for a given date.
+    /// </summary>
+    /// <param name="date">The date for which to calculate the Previous Persian month.</param>
+    /// <returns>An array of <see cref="PersianDateTime"/> objects representing each day of the Previous Persian month.</returns>
+    /// <remarks>
+    /// This method first converts the given date to a Persian date. It then creates a new <see cref="PersianDateTime"/> for each day of the Previous month, starting from the first day of the Previous month.
+    /// </remarks>
+    public static PersianDateTime[] PreviousPersianMonth(this DateTime date)
+    {
+        // Convert the date to PersianDateTime
+        var dtPersian = date.ToPersianDateTime();
+
+        var time = TimeOnly.FromTimeSpan(date.TimeOfDay);
+
+        // Subtract one month from the PersianDateTime
+        dtPersian = dtPersian.Month - 1 == 0
+            ? new PersianDateTime(dtPersian.Year - 1, 12, 1, time)
+            : new PersianDateTime(dtPersian.Year, dtPersian.Month - 1, 1, time);
+
+        // Create an array to hold the days of the Previous month
+        var nextMonth = new PersianDateTime[dtPersian.DaysInMonth];
+
+        for (var i = 0; i < dtPersian.DaysInMonth; i++)
+            nextMonth[i] = new PersianDateTime(dtPersian.Year, dtPersian.Month, i + 1, time);
+
+        return nextMonth;
+    }
 }
