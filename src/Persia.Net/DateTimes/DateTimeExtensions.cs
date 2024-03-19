@@ -14,8 +14,8 @@ public static class DateTimeExtensions
     {
         return Converter.ConvertToPersian(date)
             .SetTime(TimeOnly.FromTimeSpan(date.TimeOfDay))
-            .SetDayOfWeek((int)date.DayOfWeek)
-            .GetLeapYearStatus();
+            .SetDayOfWeek((int)date.DayOfWeek);
+        //.GetLeapYearStatus();
     }
 
     /// <summary>
@@ -151,8 +151,8 @@ public static class DateTimeExtensions
     {
         return Converter.ConvertToPersian(date.AddDays(1))
             .SetTime(TimeOnly.FromTimeSpan(date.TimeOfDay))
-            .SetDayOfWeek((int)date.DayOfWeek)
-            .GetLeapYearStatus();
+            .SetDayOfWeek((int)date.DayOfWeek);
+        //.GetLeapYearStatus();
     }
 
     /// <summary>
@@ -164,8 +164,8 @@ public static class DateTimeExtensions
     {
         return Converter.ConvertToPersian(date.AddDays(-1))
             .SetTime(TimeOnly.FromTimeSpan(date.TimeOfDay))
-            .SetDayOfWeek((int)date.DayOfWeek)
-            .GetLeapYearStatus();
+            .SetDayOfWeek((int)date.DayOfWeek);
+        //.GetLeapYearStatus();
     }
 
     /// <summary>

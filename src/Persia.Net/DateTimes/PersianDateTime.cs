@@ -4,7 +4,7 @@ using static Persia.Net.Constants.PersianCalendarConstants;
 
 namespace Persia.Net.DateTimes;
 
-public class PersianDateTime : IEquatable<PersianDateTime>
+public partial class PersianDateTime
 {
     /// <summary>
     /// Gets the year component of the date.
@@ -52,9 +52,19 @@ public class PersianDateTime : IEquatable<PersianDateTime>
     public int DayOfWeek { get; private set; }
 
     /// <summary>
-    /// Gets the days of current month.
+    /// Gets the days of the month.
     /// </summary>
     public int DaysInMonth { get; private set; }
+
+    /// <summary>
+    /// Gets the week number of the month.
+    /// </summary>
+    public int WeekOfMonth { get; private set; }
+
+    /// <summary>
+    /// Gets the week number of the year.
+    /// </summary>
+    public int WeekOfYear { get; private set; }
 
     /// <summary>
     /// Gets the name of current month.
@@ -80,6 +90,21 @@ public class PersianDateTime : IEquatable<PersianDateTime>
     /// Gets the number of days remaining until the end of the current year in the Persian calendar.
     /// </summary>
     public int DaysRemainingInYear { get; private set; }
+
+    /// <summary>
+    /// Gets the current date and time in the Persian calendar.
+    /// </summary>
+    public static PersianDateTime Now => DateTime.Now.ToPersianDateTime();
+
+    /// <summary>
+    /// Gets the current date and time in the Persian calendar in Coordinated Universal Time (UTC).
+    /// </summary>
+    public static PersianDateTime UtcNow => DateTime.UtcNow.ToPersianDateTime();
+
+    /// <summary>
+    /// Gets the current date in the Persian calendar.
+    /// </summary>
+    public static PersianDateTime Today => DateTime.Today.ToPersianDateTime();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PersianDateTime"/> class.
@@ -113,61 +138,8 @@ public class PersianDateTime : IEquatable<PersianDateTime>
         Year = year;
         Month = month;
         Day = day;
-    }
-
-    public bool Equals(PersianDateTime other)
-    {
-        if (other is null)
-            return false;
-
-        return Year == other.Year && Month == other.Month && Day == other.Day;
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (ReferenceEquals(null, obj))
-            return false;
-
-        if (ReferenceEquals(this, obj))
-            return true;
-
-        if (obj.GetType() != GetType())
-            return false;
-
-        return Equals((PersianDateTime)obj);
-    }
-
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            var hashCode = Year;
-            hashCode = (hashCode * 397) ^ Month;
-            hashCode = (hashCode * 397) ^ Day;
-            return hashCode;
-        }
-    }
-
-    public static bool operator ==(PersianDateTime left, PersianDateTime right)
-    {
-        if (ReferenceEquals(left, right))
-            return true;
-
-        if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            return false;
-
-        return left.Equals(right);
-    }
-
-    public static bool operator !=(PersianDateTime left, PersianDateTime right)
-    {
-        return !(left == right);
-    }
-
-    internal PersianDateTime SetDay(int day)
-    {
-        Day = day;
-        return this;
+        WeekOfMonth = GetWeekNumberOfMonth();
+        IsLeapYear = CheckLeapYear(year);
     }
 
     internal PersianDateTime SetTime(TimeOnly time)
@@ -199,18 +171,24 @@ public class PersianDateTime : IEquatable<PersianDateTime>
         return this;
     }
 
-    internal PersianDateTime GetLeapYearStatus()
-    {
-        // Group years into cycles of 2820 years each
-        IsLeapYear = CheckLeapYear(Year);
-        return this;
-    }
-
     internal PersianDateTime SetYearProgress(int dayOfYear, int daysRemainingInYear)
     {
         DayOfYear = dayOfYear;
         DaysRemainingInYear = daysRemainingInYear;
+        WeekOfYear = (dayOfYear - 1) / 7 + 1;
         return this;
+    }
+
+    private int GetWeekNumberOfMonth()
+    {
+        // Subtract 1 because days of the month are 1-based, not 0-based
+        var dayOfMonth = Day - 1;
+
+        // Add the day of the week. This step is necessary to handle months that start in the middle of the week
+        dayOfMonth += DayOfWeek;
+
+        // Divide by 7 and add 1 to get the week number (1-based)
+        return dayOfMonth / 7 + 1;
     }
 
     /// <summary>
@@ -230,15 +208,6 @@ public class PersianDateTime : IEquatable<PersianDateTime>
         var isLeapYear = ordinalNumber % 4 == 0;
 
         return isLeapYear;
-    }
-
-    internal PersianDateTime GetYearProgress(DateTime date)
-    {
-        var firstDay = ToDateTime(Year, 1, 1);
-        DayOfYear = (date - firstDay).Days;
-        var lastDay = ToDateTime(Year + 1, 1, 1).AddDays(-1);
-        DaysRemainingInYear = (lastDay - date).Days;
-        return this;
     }
 
     /// <summary>
