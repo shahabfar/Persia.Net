@@ -173,7 +173,7 @@ internal static class Converter
     /// <param name="year">The year in the Persian calendar.</param>
     /// <param name="date">The date for which to calculate the year progress.</param>
     /// <returns>A tuple containing the day of the year and the number of days remaining in the year.</returns>
-    public static (int DayOfYear, int DaysRemainingInYear) GetYearProgress(int year, DateTime date)
+    private static (int DayOfYear, int DaysRemainingInYear) GetYearProgress(int year, DateTime date)
     {
         // Calculate the JDN (Julian Day Number) for the start and end of the year
         var jdnStartOfYear = PersianToJulianDay(year, 1, 1);
@@ -188,6 +188,12 @@ internal static class Converter
         return (DayOfYear, DaysRemainingInYear);
     }
 
+    /// <summary>
+    /// Calculates the number of days in a given month of a given year in the Persian calendar.
+    /// </summary>
+    /// <param name="year">The year in the Persian calendar.</param>
+    /// <param name="month">The month in the Persian calendar.</param>
+    /// <returns>The number of days in the specified month of the specified year in the Persian calendar.</returns>
     private static int GetDaysInPersianMonth(int year, int month)
     {
         // Calculate the Julian day of the first day of the current month
@@ -199,6 +205,11 @@ internal static class Converter
         return (int)(firstDayOfNextMonth - firstDayOfCurrentMonth);
     }
 
+    /// <summary>
+    /// Calculates the number of ticks for a given Persian date.
+    /// </summary>
+    /// <param name="dtPersian">The Persian date for which to calculate the ticks.</param>
+    /// <returns>The number of ticks that represent the date and time of the specified Persian date.</returns>
     private static long CalculatePersianTicks(PersianDateTime dtPersian)
     {
         // Convert the Persian date to a Julian Day number

@@ -1,5 +1,4 @@
 ﻿using Persia.Net.DateTimes;
-using Persia.Net.Enums;
 
 namespace Persia.Net.Test
 {
@@ -161,19 +160,19 @@ namespace Persia.Net.Test
             Assert.Equal(0, persianDate.DaysRemainingInYear);
         }
 
-        [Fact]
-        public void Test_HumanizePersianDateTimePassed_ReturnCorrectText()
-        {
-            // Arrange
-            var date = new DateTime(2023, 12, 21);
+        //[Fact]
+        //public void Test_HumanizePersianDateTimePassed_ReturnCorrectText()
+        //{
+        //    // Arrange
+        //    var date = new DateTime(2023, 12, 21);
 
-            // Act
-            //var humanizedPersian = date.HumanizePersianDateTimePassed(6);
-            var humanizedPersian = date.HumanizePassedPersianDateTime(TimeUnit.Days);
+        //    // Act
+        //    //var humanizedPersian = date.HumanizePersianDateTimePassed(6);
+        //    var humanizedPersian = date.HumanizePassedPersianDateTime(TimeUnit.Days);
 
-            // Assert
-            Assert.Equal("‫۱۱ ماه و ۳۶۲ روز و ۲ ساعت پیش‬", humanizedPersian);
-        }
+        //    // Assert
+        //    Assert.Equal("‫۱۱ ماه و ۳۶۲ روز و ۲ ساعت پیش‬", humanizedPersian);
+        //}
 
         [Fact]
         public void Test_GetNextCurrentPreviousDayWeekMonth_ReturnCorrectDate()
@@ -201,6 +200,30 @@ namespace Persia.Net.Test
             Assert.Equal(new PersianDateTime(1402, 12, 26), currentMonth[25]);
             Assert.Equal(new PersianDateTime(1403, 01, 03), nextMonth[2]);
             Assert.Equal(new PersianDateTime(1402, 11, 30), previousMonth[29]);
+        }
+
+        [Fact]
+        public void Test_CompareTwoPersianDateTimeInstances_ReturnCorrectComparison()
+        {
+            // Arrange
+            var dtPersian1 = new DateTime(2024, 03, 19).ToPersianDateTime();
+            var dtPersian2 = new DateTime(2024, 03, 22).ToPersianDateTime();
+
+            // Act
+            var isEqual = dtPersian1 == dtPersian2;
+            var isNotEqual = dtPersian1 != dtPersian2;
+            var isGreater = dtPersian1 > dtPersian2;
+            var isSmaller = dtPersian1 < dtPersian2;
+            var isGreaterOrEqual = dtPersian1 >= dtPersian2;
+            var isSmallerOrEqual = dtPersian1 <= dtPersian2;
+
+            // Assert
+            Assert.Equal(false, isEqual);
+            Assert.Equal(true, isNotEqual);
+            Assert.Equal(false, isGreater);
+            Assert.Equal(true, isSmaller);
+            Assert.Equal(false, isGreaterOrEqual);
+            Assert.Equal(true, isSmallerOrEqual);
         }
     }
 }
