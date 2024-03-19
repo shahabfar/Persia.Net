@@ -28,9 +28,17 @@ internal static class PersianWords
         return enableRLE ? $"{RleChar}{res}{PopDirectionalFormatting}" : res;
     }
 
-    public static string ConvertToPersianNumber(string num)
+    /// <summary>
+    /// Converts the Latin numbers in the input string to their Persian equivalents.
+    /// </summary>
+    /// <param name="num">The input string possibly containing Latin numbers.</param>
+    /// <returns>
+    /// A string where Latin numbers have been replaced with their Persian equivalents.
+    /// </returns>
+    public static string ToPersianNumber(this string num)
     {
-        if (string.IsNullOrWhiteSpace(num)) return string.Empty;
+        if (string.IsNullOrWhiteSpace(num)) 
+            return string.Empty;
 
         return string.Create(num.Length, num, (chars, context) =>
         {
@@ -38,35 +46,43 @@ internal static class PersianWords
             {
                 chars[i] = context[i] switch
                 {
-                    '0' => '\u06F0',
-                    '\u0660' => '\u06F0',
-                    '1' => '\u06F1',
-                    '\u0661' => '\u06F1',
-                    '2' => '\u06F2',
-                    '\u0662' => '\u06F2',
-                    '3' => '\u06F3',
-                    '\u0663' => '\u06F3',
-                    '4' => '\u06F4',
-                    '\u0664' => '\u06F4',
-                    '5' => '\u06F5',
-                    '\u0665' => '\u06F5',
-                    '6' => '\u06F6',
-                    '\u0666' => '\u06F6',
-                    '7' => '\u06F7',
-                    '\u0667' => '\u06F7',
-                    '8' => '\u06F8',
-                    '\u0668' => '\u06F8',
-                    '9' => '\u06F9',
-                    '\u0669' => '\u06F9',
-                    _ => chars[i]
+                    '0' => '\u06F0', // Persian zero
+                    '\u0660' => '\u06F0', // Arabic-Indic zero
+                    '1' => '\u06F1', // Persian one
+                    '\u0661' => '\u06F1', // Arabic-Indic one
+                    '2' => '\u06F2', // Persian two
+                    '\u0662' => '\u06F2', // Arabic-Indic two
+                    '3' => '\u06F3', // Persian three
+                    '\u0663' => '\u06F3', // Arabic-Indic three
+                    '4' => '\u06F4', // Persian four
+                    '\u0664' => '\u06F4', // Arabic-Indic four
+                    '5' => '\u06F5', // Persian five
+                    '\u0665' => '\u06F5', // Arabic-Indic five
+                    '6' => '\u06F6', // Persian six
+                    '\u0666' => '\u06F6', // Arabic-Indic six
+                    '7' => '\u06F7', // Persian seven
+                    '\u0667' => '\u06F7', // Arabic-Indic seven
+                    '8' => '\u06F8', // Persian eight
+                    '\u0668' => '\u06F8', // Arabic-Indic eight
+                    '9' => '\u06F9', // Persian nine
+                    '\u0669' => '\u06F9', // Arabic-Indic nine
+                    _ => context[i]
                 };
             }
         });
     }
 
-    private static string ConvertToLatinNumber(string num)
+    /// <summary>
+    /// Converts the Persian numbers in the input string to their Latin equivalents.
+    /// </summary>
+    /// <param name="num">The input string possibly containing Persian numbers.</param>
+    /// <returns>
+    /// A string where Persian numbers have been replaced with their Latin equivalents.
+    /// </returns>
+    public static string ToLatinNumber(this string num)
     {
-        if (string.IsNullOrWhiteSpace(num)) return string.Empty;
+        if (string.IsNullOrWhiteSpace(num)) 
+            return string.Empty;
 
         return string.Create(num.Length, num, (chars, context) =>
         {
@@ -94,7 +110,7 @@ internal static class PersianWords
                     '\u0668' => '8', //۸
                     '\u06F9' => '9', //٩
                     '\u0669' => '9', //۹
-                    _ => chars[i]
+                    _ => context[i]
                 };
             }
         });

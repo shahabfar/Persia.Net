@@ -208,7 +208,7 @@ namespace Persia.Net.Test
             // Arrange
             var dtPersian1 = new DateTime(2024, 03, 19).ToPersianDateTime();
             var dtPersian2 = new DateTime(2024, 03, 22).ToPersianDateTime();
-
+            
             // Act
             var isEqual = dtPersian1 == dtPersian2;
             var isNotEqual = dtPersian1 != dtPersian2;
@@ -218,12 +218,52 @@ namespace Persia.Net.Test
             var isSmallerOrEqual = dtPersian1 <= dtPersian2;
 
             // Assert
-            Assert.Equal(false, isEqual);
-            Assert.Equal(true, isNotEqual);
-            Assert.Equal(false, isGreater);
-            Assert.Equal(true, isSmaller);
-            Assert.Equal(false, isGreaterOrEqual);
-            Assert.Equal(true, isSmallerOrEqual);
+            Assert.False(isEqual);
+            Assert.True(isNotEqual);
+            Assert.False(isGreater);
+            Assert.True(isSmaller);
+            Assert.False(isGreaterOrEqual);
+            Assert.True(isSmallerOrEqual);
+        }
+
+        [Fact]
+        public void Test_AddDaysAddMonths_ReturnCorrectDate()
+        {
+            // Arrange
+            var dtPersian = new DateTime(2024, 03, 19).ToPersianDateTime();
+
+            // Act
+            var addedDays = dtPersian.AddDays(10);
+            var addedMonths = dtPersian.AddMonths(23);
+
+            // Assert
+            Assert.Equal(new PersianDateTime(1403, 01, 10), addedDays);
+            Assert.Equal(new PersianDateTime(1404, 11, 29), addedMonths);
+        }
+
+        [Fact]
+        public void Parse_ValidDate_ReturnsCorrectPersianDateTime()
+        {
+            // Arrange
+            var date = "۱۴۰۲/۱۲/۲۰";// "1402/12/20";
+
+            // Act
+            var dtPersian = PersianDateTime.Parse(date);
+            var success = PersianDateTime.TryParse(date, out var result);
+            var failure = PersianDateTime.TryParse("invalid date", out var result2);
+
+            // Assert
+            Assert.Equal(1402, dtPersian.Year);
+            Assert.Equal(12, dtPersian.Month);
+            Assert.Equal(20, dtPersian.Day);
+
+            Assert.Throws<FormatException>(() => PersianDateTime.Parse("invalid date"));
+            Assert.True(success);
+            Assert.Equal(1402, result.Year);
+            Assert.Equal(12, result.Month);
+            Assert.Equal(20, result.Day);
+            Assert.False(failure);
+            Assert.Null(result2);
         }
     }
 }
