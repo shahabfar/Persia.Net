@@ -319,4 +319,116 @@ public partial class PersianDateTime
         return DateOnly.FromDateTime(Converter.ConvertToGregorian(year, month, day, 0, 0, 0));
     }
 
+    /// <summary>
+    /// Converts the value of this instance to a DateTime.
+    /// </summary>
+    /// <returns>
+    /// A DateTime that is equivalent to the date and time represented by this instance.
+    /// </returns>
+    public DateTime ToDateTime()
+    {
+        return Converter.ConvertToGregorian(Year, Month, Day, Hour, Minute, Second, Millisecond);
+    }
+
+    /// <summary>
+    /// Converts the value of this instance to a DateOnly.
+    /// </summary>
+    /// <returns>
+    /// A DateOnly that is equivalent to the date represented by this instance.
+    /// </returns>
+    public DateOnly ToDateOnly()
+    {
+        return DateOnly.FromDateTime(Converter.ConvertToGregorian(Year, Month, Day, 0, 0, 0));
+    }
+
+    /// <summary>
+    /// Adds the specified number of days to the value of this instance.
+    /// </summary>
+    /// <param name="days">The number of days to add.</param>
+    /// <returns>
+    /// A PersianDateTime that is the sum of the date and days.
+    /// </returns>
+    public PersianDateTime AddDays(int days)
+    {
+        return ToDateTime().AddDays(days).ToPersianDateTime();
+    }
+
+    /// <summary>
+    /// Adds the specified number of months to the value of this instance.
+    /// </summary>
+    /// <param name="months">The number of months to add.</param>
+    /// <returns>
+    /// A PersianDateTime that is the sum of the date and months.
+    /// </returns>
+    public  PersianDateTime AddMonths(int months)
+    {
+        var totalMonths = Month + months;
+        var year = Year + totalMonths / 12;
+        var month = totalMonths % 12;
+
+        if (month == 0)
+        {
+            year -= 1;
+            month = 12;
+        }
+
+        return new PersianDateTime(year, month, Day, new TimeOnly(Hour, Minute, Second, Millisecond));
+    }
+
+    /// <summary>
+    /// Converts the specified string representation of a date to its PersianDateTime equivalent.
+    /// </summary>
+    /// <param name="date">A string containing a date to convert.</param>
+    /// <param name="systemClock">A boolean value that indicates whether to use the current system time. If true, the current system time is used; otherwise, the time is set to 00:00:00.</param>
+    /// <returns>
+    /// A PersianDateTime equivalent to the date contained in the input string.
+    /// </returns>
+    /// <exception cref="System.FormatException">Thrown when the input string is not in the correct format.</exception>
+    public static PersianDateTime Parse(string date, bool systemClock = false)
+    {
+        var parts = date.ToLatinNumber().Split('/');
+        if (parts.Length != 3)
+            throw new FormatException("Invalid date format. Expected format is 'yyyy/MM/dd'.");
+
+        var year = int.Parse(parts[0]);
+        var month = int.Parse(parts[1]);
+        var day = int.Parse(parts[2]);
+
+        return !systemClock 
+            ? new PersianDateTime(year, month, day) 
+            : new PersianDateTime(year, month, day, TimeOnly.FromDateTime(DateTime.Now));
+    }
+
+    /// <summary>
+    /// Tries to convert the specified string representation of a date to its PersianDateTime equivalent, and returns a value that indicates whether the conversion succeeded.
+    /// </summary>
+    /// <param name="date">A string containing a date to convert.</param>
+    /// <param name="result">When this method returns, contains the PersianDateTime equivalent to the date contained in the input string, if the conversion succeeded, or null if the conversion failed. The conversion fails if the input string is not in the correct format, or represents a date that is not possible in the Persian calendar. This parameter is passed uninitialized.</param>
+    /// <param name="systemClock">A boolean value that indicates whether to use the current system time. If true, the current system time is used; otherwise, the time is set to 00:00:00.</param>
+    /// <returns>
+    /// true if the input string was converted successfully; otherwise, false.
+    /// </returns>
+    public static bool TryParse(string date, out PersianDateTime result, bool systemClock = false)
+    {
+        var parts = date.ToLatinNumber().Split('/');
+        if (parts.Length != 3)
+        {
+            result = null;
+            return false;
+        }
+
+        if (!int.TryParse(parts[0], out var year) ||
+            !int.TryParse(parts[1], out var month) ||
+            !int.TryParse(parts[2], out var day))
+        {
+            result = null;
+            return false;
+        }
+
+        result = !systemClock
+            ? new PersianDateTime(year, month, day)
+            : new PersianDateTime(year, month, day, TimeOnly.FromDateTime(DateTime.Now));
+
+        return true;
+    }
 }
