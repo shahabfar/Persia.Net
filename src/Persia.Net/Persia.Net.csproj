@@ -5,6 +5,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+
+    <AssemblyTitle>Persia.Net</AssemblyTitle>
+    <AssemblyCompany>Shahabfar</AssemblyCompany>
+    <AssemblyProduct>Persia.Net</AssemblyProduct>
+    <AssemblyCopyright>Majid Shahabfar 2024</AssemblyCopyright>
+    <AssemblyVersion>4.0.8.1</AssemblyVersion>
+    <FileVersion>4.0.8.1</FileVersion>
+    <ProductVersion>4.0.8.1</ProductVersion>
   </PropertyGroup>
 
 </Project>
