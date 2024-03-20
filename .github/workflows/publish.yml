@@ -27,7 +27,13 @@ jobs:
 
     - name: Set version
       id: version
-      run: echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          VERSION=${GITHUB_REF#refs/tags/}
+        else
+          VERSION=1.0.0
+        fi
+        echo "::set-output name=version::$VERSION"
 
     - name: Pack
       run: dotnet pack --no-build --configuration Release /p:PackageVersion=${{ steps.version.outputs.version }} --output out
