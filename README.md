@@ -67,7 +67,7 @@ The `PersianDateTime` class in the Persia.Net library is a comprehensive utility
 | `Second` | Gets the second component of the time. |
 | `Millisecond` | Gets the millisecond component of the time. |
 | `Ticks` | Gets the number of ticks that represent the time. |
-| `DayOfWeek` | Gets the day number of the week. This number is zero based. |
+| `DayOfWeek` | Gets the day number of the week. This number is zero-based. |
 | `DaysInMonth` | Gets the days of the month. |
 | `WeekOfMonth` | Gets the week number of the month. |
 | `WeekOfYear` | Gets the week number of the year. |
@@ -103,7 +103,7 @@ In addition to date conversion, the `PersianDateTime` class also includes built-
 | `ToPersianString` | Converts the date to a string in the Persian format with Year and Day in digit and Month in word.<br>برای مثال, ۲۰ اسفند ۱۴۰۲|
 | `ToLongPersianString` | Converts the date to a string in the Persian format with Year and Day in digit and Month in word as well as weekday name and time.<br>برای مثال, یکشنبه ۲۰ اسفند ۱۴۰۲|
 | `ToPersianDayMonthString` | Converts the date to a string in the Persian format with Year in digit and Day and Month in words.<br>برای مثال, بیستم اسفند ۱۴۰۲|
-| `ToPersianWeekdayString` | Converts the date to a string in the Persian as well as week day name.<br>برای مثال, یکشنبه ۱۴۰۲/۱۲/۲۰|
+| `ToPersianWeekdayString` | Converts the date to a string in Persian as well as week day name.<br>برای مثال, یکشنبه ۱۴۰۲/۱۲/۲۰|
 | `ToLongPersianOrdinalWords` |Converts the date to a string in the Persian format with Year in digit and Day and Month in words as well as weekday name.<br>برای مثال, یکشنبه بیستم اسفند ۱۴۰۲|
 
 ## Converting Persian Date to Gregorian DateTime
@@ -161,7 +161,7 @@ string HumanizePassedPersianDateTime(TimeUnit timeUnit)
 ```
 By default, this method generates a human-readable format with three components. However, if you prefer a more detailed output, you can specify up to six components. To do this, simply pass the desired number of components as an argument to this method. 
 
-Here's the example:
+Here's an example:
 ```csharp
 // Define a DateTime
 var date = new DateTime(2023, 12, 21);
@@ -181,7 +181,7 @@ Here’s how you can do this:
 var humanizedPersian = date.HumanizePassedPersianDateTime(TimeUnit.Days);
 ```
 In this example, `HumanizePassedPersianDateTime` will return the elapsed time since the specified date, expressed solely in terms of days. This allows for a more focused representation of the elapsed time.
-Here is the enumerable `TimeUnit` values:
+Here are the enumerable `TimeUnit` values:
 
  ```Years
     Months
@@ -202,7 +202,7 @@ If you're interested in obtaining information about the current week or month in
 
 These methods provide a convenient way to navigate through the Persian calendar, allowing you to easily access and manipulate date-related data.
 
-![](https://github.com/shahabfar/persia.net/blob/master/screenshot_1.jpg)
+![](https://github.com/shahabfar/persia.net/blob/master/next_persian_week.jpg)
 
 These methods return an array of `PersianDateTime` objects, each containing detailed information about the requested week or month.
 
