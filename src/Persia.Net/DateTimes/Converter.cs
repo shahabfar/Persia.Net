@@ -1,6 +1,6 @@
-﻿namespace Persia.Net.DateTimes;
+﻿namespace Persia.Net;
 
-using static Constants.CalendarConstants;
+using static CalendarConstants;
 
 internal static class Converter
 {

@@ -1,4 +1,4 @@
-﻿namespace Persia.Net.DateTimes;
+﻿namespace Persia.Net;
 
 public class PersianDateOnly(int year, int month, int day)
 {

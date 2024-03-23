@@ -1,4 +1,4 @@
-﻿namespace Persia.Net.DateTimes;
+﻿namespace Persia.Net;
 
 public partial class PersianDateTime : IEquatable<PersianDateTime>, IComparable<PersianDateTime>
 {
