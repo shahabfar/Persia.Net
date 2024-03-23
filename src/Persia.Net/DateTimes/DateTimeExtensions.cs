@@ -1,7 +1,6 @@
-﻿using Persia.Net.Enums;
-using Persia.Net.Words;
+﻿using Persia.Net;
 
-namespace Persia.Net.DateTimes;
+namespace Persia.Net;
 
 public static class DateTimeExtensions
 {

@@ -1,6 +1,5 @@
-﻿using Persia.Net.Enums;
-
-namespace Persia.Net.DateTimes;
+﻿
+namespace Persia.Net;
 
 public static class NullableDateTimeExtensions
 {
@@ -154,6 +153,14 @@ public static class NullableDateTimeExtensions
         return date.Value.NextPersianMonth();
     }
 
+    /// <summary>
+    /// Calculates the dates of the Previous Persian month for a given date.
+    /// </summary>
+    /// <param name="date">The date for which to calculate the Previous Persian month. If null, an ArgumentNullException is thrown.</param>
+    /// <returns>An array of <see cref="PersianDateTime"/> objects representing each day of the Previous Persian month.</returns>
+    /// <remarks>
+    /// This method first converts the given date to a Persian date. It then creates a new <see cref="PersianDateTime"/> for each day of the Previous month, starting from the first day of the Previous month.
+    /// </remarks>
     public static PersianDateTime[] PreviousPersianMonth(this DateTime? date)
     {
         if (!date.HasValue)

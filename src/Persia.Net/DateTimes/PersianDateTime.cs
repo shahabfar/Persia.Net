@@ -1,8 +1,8 @@
-﻿using Persia.Net.Words;
-using static Persia.Net.Constants.CalendarConstants;
-using static Persia.Net.Constants.PersianCalendarConstants;
+﻿using Persia.Net;
+using static Persia.Net.CalendarConstants;
+using static Persia.Net.PersianCalendarConstants;
 
-namespace Persia.Net.DateTimes;
+namespace Persia.Net;
 
 public partial class PersianDateTime
 {
@@ -378,7 +378,7 @@ public partial class PersianDateTime
     /// <summary>
     /// Converts the specified string representation of a date to its PersianDateTime equivalent.
     /// </summary>
-    /// <param name="date">A string containing a date to convert.</param>
+    /// <param name="date">A string containing a date to convert. Expected format is 'yyyy/MM/dd'.</param>
     /// <param name="systemClock">A boolean value that indicates whether to use the current system time. If true, the current system time is used; otherwise, the time is set to 00:00:00.</param>
     /// <returns>
     /// A PersianDateTime equivalent to the date contained in the input string.
@@ -402,7 +402,7 @@ public partial class PersianDateTime
     /// <summary>
     /// Tries to convert the specified string representation of a date to its PersianDateTime equivalent, and returns a value that indicates whether the conversion succeeded.
     /// </summary>
-    /// <param name="date">A string containing a date to convert.</param>
+    /// <param name="date">A string containing a date to convert. Expected format is 'yyyy/MM/dd'.</param>
     /// <param name="result">When this method returns, contains the PersianDateTime equivalent to the date contained in the input string, if the conversion succeeded, or null if the conversion failed. The conversion fails if the input string is not in the correct format, or represents a date that is not possible in the Persian calendar. This parameter is passed uninitialized.</param>
     /// <param name="systemClock">A boolean value that indicates whether to use the current system time. If true, the current system time is used; otherwise, the time is set to 00:00:00.</param>
     /// <returns>

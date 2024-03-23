@@ -1,6 +1,4 @@
-﻿using Persia.Net.DateTimes;
-
-namespace Persia.Net.Test
+﻿namespace Persia.Net.Test
 {
     public class PersianDateTimeTests
     {
