@@ -1,4 +1,4 @@
-﻿namespace Persia.Net.Enums;
+﻿namespace Persia.Net;
 
 public enum TimeUnit
 {

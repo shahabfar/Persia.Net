@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Persia.Net.Words;
+namespace Persia.Net;
 
 internal static class PersianWords
 {

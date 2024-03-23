@@ -1,4 +1,4 @@
-﻿namespace Persia.Net.Constants;
+﻿namespace Persia.Net;
 
 internal class CalendarConstants
 {
