@@ -110,6 +110,9 @@ public static class DateTimeExtensions
         var years = dtPersianNow.Year - dtPersian.Year;
         var months = years * 12 + dtPersianNow.Month - dtPersian.Month;
         var days = (int)(now - dateTime).TotalDays; // This is an approximation
+        var hours = (int)(now - dateTime).TotalHours;
+        var minutes = (int)(now - dateTime).TotalMinutes;
+        var seconds = (int)(now - dateTime).TotalSeconds;
 
         var result = "";
 
@@ -127,19 +130,20 @@ public static class DateTimeExtensions
         }
         else if (timeUnit == TimeUnit.Hours)
         {
-            result = $"{days * 24} ساعت"; // This is an approximation
+            result = $"{hours} ساعت";
         }
         else if (timeUnit == TimeUnit.Minutes)
         {
-            result = $"{days * 24 * 60} دقیقه"; // This is an approximation
+            result = $"{minutes} دقیقه";
         }
         else if (timeUnit == TimeUnit.Seconds)
         {
-            result = $"{days * 24 * 60 * 60} ثانیه"; // This is an approximation
+            result = $"{seconds} ثانیه";
         }
 
         return (result + " پیش").ToPersianString(true);
     }
+
 
     /// <summary>
     /// Calculates the next day from the given date and returns it as a PersianDateTime.
