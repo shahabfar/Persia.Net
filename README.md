@@ -206,8 +206,8 @@ These methods provide a convenient way to navigate through the Persian calendar,
 
 These methods return an array of `PersianDateTime` objects, each containing detailed information about the requested week or month.
 
-In the above image you can see the date-related data for the next week of given date as `PersianDateTime` array.
+In the above image, you can see the date-related data for the next week of a given date as a `PersianDateTime` array.
 
 ## Converting Arabic (Islamic) Date to Persian Date
-I'm actively working on this feature and it will be available in the near future. Stay tuned! 
+I'm actively working on this feature and it will be available shortly. Stay tuned! 
 
