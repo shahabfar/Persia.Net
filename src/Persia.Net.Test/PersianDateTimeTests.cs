@@ -24,7 +24,7 @@
         }
 
         [Fact]
-        public void Test_ConvertToPersianDateToString_ReturnCorrectStirng()
+        public void Test_ConvertToPersianDateToString_ReturnCorrectString()
         {
             // Arrange
             var date = new DateTime(2024, 03, 10);
@@ -37,7 +37,7 @@
         }
 
         [Fact]
-        public void Test_ConvertToPersianDateToPersianString_ReturnCorrectStirng()
+        public void Test_ConvertToPersianDateToShortPersianString_ReturnCorrectString()
         {
             // Arrange
             var date = new DateTime(2024, 03, 10);
@@ -50,7 +50,7 @@
         }
 
         [Fact]
-        public void Test_ConvertToPersianDateToPersianDayMonthString_ReturnCorrectStirng()
+        public void Test_ConvertToPersianDateToPersianDayMonthString_ReturnCorrectString()
         {
             // Arrange
             var date = new DateTime(2024, 03, 10);
@@ -63,7 +63,7 @@
         }
 
         [Fact]
-        public void Test_ConvertToPersianDateToPersianStringWithWeekDay_ReturnCorrectStirng()
+        public void Test_ConvertToPersianDateToPersianStringWithWeekDay_ReturnCorrectString()
         {
             // Arrange
             var date = new DateTime(2024, 03, 10);
@@ -76,7 +76,7 @@
         }
 
         [Fact]
-        public void Test_ConvertToPersianDateToPersianDayMonthStringWithWeekday_ReturnCorrectStirng()
+        public void Test_ConvertToPersianDateToPersianDayMonthStringWithWeekday_ReturnCorrectString()
         {
             // Arrange
             var date = new DateTime(2024, 03, 10);
@@ -89,7 +89,7 @@
         }
 
         [Fact]
-        public void Test_ConvertToPersianDateToPersianMonthString_ReturnCorrectStirng()
+        public void Test_ConvertToPersianDateToPersianMonthString_ReturnCorrectString()
         {
             // Arrange
             var date = new DateTime(2024, 03, 22);
@@ -102,7 +102,7 @@
         }
 
         [Fact]
-        public void Test_ConvertToPersianDateToPersianMonthStringWithWeekday_ReturnCorrectStirng()
+        public void Test_ConvertToPersianDateToLongPersianString_ReturnCorrectString()
         {
             // Arrange
             var date = new DateTime(2024, 03, 22);
@@ -145,7 +145,7 @@
         }
 
         [Fact]
-        public void Test_GetDayOfYearAndDaysRamainingInYear_ReturnCorrectNumbers()
+        public void Test_GetDayOfYearAndDaysRemainingInYear_ReturnCorrectNumbers()
         {
             // Arrange
             var date = new DateTime(2024, 03, 19);
@@ -262,6 +262,21 @@
             Assert.Equal(20, result.Day);
             Assert.False(failure);
             Assert.Null(result2);
+        }
+
+        [Fact]
+        public void Test_ConvertPersianToIslamicDate_ReturnCorrectDate()
+        {
+            // Arrange
+            var dtPersian = new PersianDateTime(1403, 01, 09);
+
+            // Act
+            var convertedDate = dtPersian.ToIslamicDateTime();
+
+            // Assert
+            Assert.Equal(18, convertedDate.Day);
+            Assert.Equal(09, convertedDate.Month);
+            Assert.Equal(1445, convertedDate.Year);
         }
     }
 }
