@@ -2,7 +2,7 @@
 
 namespace Persia.Net;
 
-internal static class PersianWords
+public static class PersianWords
 {
     public const char RleChar = (char)0x202B;
     public const char PopDirectionalFormatting = (char)0x202C;

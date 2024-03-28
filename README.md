@@ -81,7 +81,7 @@ The `PersianDateTime` class in the Persia.Net library is a comprehensive utility
 | `Today` | Gets the current date in the Persian calendar.|
 
 
-### Converting Gregorian Date to Persian Date
+### Converting Gregorian date to Persian date
 
 The provided code snippet is a simple example of converting a Gregorian date to a Persian date using `ToPersianDateTime()` extension method.
 
@@ -106,7 +106,7 @@ In addition to date conversion, the `PersianDateTime` class also includes built-
 | `ToPersianWeekdayString` | Converts the date to a string in Persian as well as week day name.<br>برای مثال, یکشنبه ۱۴۰۲/۱۲/۲۰|
 | `ToLongPersianOrdinalWords` |Converts the date to a string in the Persian format with Year in digit and Day and Month in words as well as weekday name.<br>برای مثال, یکشنبه بیستم اسفند ۱۴۰۲|
 
-## Converting Persian Date to Gregorian DateTime
+## Converting Persian date to Gregorian DateTime
 In .NET, the `PersianDateTime` class provides straightforward methods for converting Persian dates to Gregorian dates or `DateTime`. Specifically, the `ToDateTime` and `ToDateOnly` methods can be utilized for this purpose. Both of these methods are available as static and instance methods within the `PersianDateTime` class. This allows for flexible usage depending on the specific requirements of your code.
 
 The `ToDateTime` method in the `PersianDateTime` class allows you to convert a Persian date to a Gregorian `DateTime`. This method is static and takes three parameters: `year`, `month`, and `day`.
@@ -190,7 +190,7 @@ Here are the enumerable `TimeUnit` values:
     Minutes
     Seconds
 ```
-### Retrieving Detailed Week and Month Data in the Persian Calendar
+### Retrieving Detailed Week and Month data in the Persian calendar
 If you're interested in obtaining information about the current week or month in the Persian calendar, this library offers specific `DateTime` extension methods designed for this purpose. These methods include:
 
 - `CurrentPersianWeek`: Retrieves the current week.
@@ -208,6 +208,61 @@ These methods return an array of `PersianDateTime` objects, each containing deta
 
 In the above image, you can see the date-related data for the next week of a given date as a `PersianDateTime` array.
 
-## Converting Arabic (Islamic) Date to Persian Date
-I'm actively working on this feature and it will be available shortly. Stay tuned! 
+## Converting Gregorian date to Islamic (Lunar Hijri) date
 
+The provided code snippet is a simple example of converting a Gregorian date to an Islamic date using `ToIslamicDateTime()` extension method.
+
+```csharp
+var date = new DateTime(2024, 03, 26); // Define a Gregorian date
+
+// Convert the Gregorian date to an Islamic date
+var dtIslamic = date.ToIslamicDateTime(); // returns an object of IslamicDateTime class
+Console.WriteLine(dtIslamic.Year); 
+Console.WriteLine(dtIslamic.Month); 
+Console.WriteLine(dtIslamic.Day); 
+```
+
+In addition to date conversion, the `IslamicDateTime` class also includes built-in string generation methods. These methods transform the converted DateTime into a human-readable Islamic string, providing a more intuitive representation of the date and time in Islamic. The following table outlines these methods:
+
+| Method | Description |
+| --- | --- |
+| `ToString` | Converts the date to a string in the format "yyyy/MM/dd".<br>برای مثال, 1445/09/17|
+| `ToShortArabicString` | Converts the date to a string in the format "yyyy/MM/dd" with Arabic numbers.<br>برای مثال, ١٤٤٥/٠٩/١٧|
+| `ToArabicString` | Converts the date to a string in the Arabic format with Year and Day in digit and Month in word.<br>برای مثال, ١٧ رمضان ١٤٤٥|
+| `ToLongArabicString` | Converts the date to a string in the Arabic format with Year and Day in digit and Month in word as well as weekday name.<br>برای مثال, الاربعا ١٧ رمضان ١٤٤٥ |
+
+## Converting Persian date to Islamic (Lunar Hijri) date
+
+The PersianDateTime class contains `ToIslamicDateTime` and `ToIslamicDateOnly` methods to convert a Persian (Solar Hijri) date to an Islamic (Lunar Hijri) date. The `ToIslamicDateTime` method also includes time conversion. These methods are existing in both static and instance methods.
+
+The `ToIslamicDateTime` method takes seven parameters: the year, month, day, hour, minute, second, and an optional millisecond from the Persian date while, The `ToIslamicDateOnly` method takes three parameters: the year, month, and day from the Persian date.
+
+Here’s a small sample code to demonstrate the conversion:
+```csharp
+var persianDate = new PersianDateTime(1403, 01, 09);
+
+// Convert the Persian date to an Islamic date string
+var islamicDate = persianDate.ToIslamicDateTime().ToString();
+
+// Print the Islamic date
+Console.WriteLine(islamicDate);
+```
+
+## Converting Islamic (Lunar Hijri) date to Persian date
+
+The `IslamicDateTime` class contains `ToPersianDateTime` and `ToPersianDateOnly` methods to convert an Islamic (Lunar Hijri) date to a Persian (Solar Hijri) date. The `ToPersianDateTime` method also includes time conversion. These methods are existing in both static and instance methods.
+
+The `ToPersianDateTime` method takes seven parameters: the year, month, day, hour, minute, second, and an optional millisecond from the Islamic date. It uses a Converter to convert the Islamic date to a Persian date, sets the time, and returns the resulting Persian date and time.
+
+The `ToPersianDateOnly` method takes three parameters: the year, month, and day from the Islamic date. It uses a Converter to convert the Islamic date to a Persian date and returns the resulting Persian date.
+
+Here’s a small sample code to demonstrate the conversion:
+```csharp
+var islamicDate = new IslamicDateTime(1445, 09, 18);
+
+// Convert the Islamic date to a Persian date string
+var persianDate = islamicDate.ToPersianDateOnly().ToString();
+
+// Print the Persian date
+Console.WriteLine(persianDate);
+```

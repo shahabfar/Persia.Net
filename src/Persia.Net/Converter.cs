@@ -12,7 +12,7 @@ internal static class Converter
     internal static PersianDateTime ConvertToPersian(DateTime date)
     {
         // Convert the Gregorian date to Julian Day Number
-        var jd = GregorianTojulianDay(date.Year, date.Month, date.Day);
+        var jd = GregorianToJulianDay(date.Year, date.Month, date.Day);
 
         // Convert the Julian Day Number to a Persian date
         var persianDate = JulianDayToPersian(jd);
@@ -43,7 +43,7 @@ internal static class Converter
     /// <param name="month">The month part of the Gregorian date.</param>
     /// <param name="day">The day part of the Gregorian date.</param>
     /// <returns>The Julian Day number corresponding to the input Gregorian date.</returns>
-    private static double GregorianTojulianDay(int year, int month, int day)
+    private static double GregorianToJulianDay(int year, int month, int day)
     {
         double yearsBefore = year - 1;
         var leapYears = Math.Floor(yearsBefore / LeapYearFrequency) - Math.Floor(yearsBefore / Century) + Math.Floor(yearsBefore / LeapYearCycle);
@@ -128,43 +128,12 @@ internal static class Converter
         if (!(Math.Abs(numberOfCompleteCenturies - 4) < Tolerance || Math.Abs(yearIndexInCurrentLeapYearFrequency - 4) < Tolerance))
             year++;
 
-        var dayOfYear = wholeJulianDay - GregorianTojulianDay(year, 1, 1);
-        float leapYearAdjustment = wholeJulianDay < GregorianTojulianDay(year, 3, 1) ? 0 : IsGregorianLeapYear(year) ? 1 : 2;
+        var dayOfYear = wholeJulianDay - GregorianToJulianDay(year, 1, 1);
+        float leapYearAdjustment = wholeJulianDay < GregorianToJulianDay(year, 3, 1) ? 0 : IsGregorianLeapYear(year) ? 1 : 2;
         var month = (int)Math.Floor(((dayOfYear + leapYearAdjustment) * 12 + MonthCalculationOffset) / MonthFactorMultiplier);
-        var day = (int)(wholeJulianDay - GregorianTojulianDay(year, month, 1) + 1);
+        var day = (int)(wholeJulianDay - GregorianToJulianDay(year, month, 1) + 1);
 
         return new DateOnly(year, month, day);
-    }
-
-    /// <summary>
-    /// Converts an Islamic date to a Julian day number.
-    /// </summary>
-    /// <param name="year">The Islamic year.</param>
-    /// <param name="month">The Islamic month.</param>
-    /// <param name="day">The Islamic day.</param>
-    /// <returns>The Julian day number corresponding to the given Islamic date.</returns>
-    private static double IslamicToJulianDay(int year, int month, int day)
-    {
-        return day
-            + Math.Ceiling(MonthAdjustment * (month - 1))
-            + (year - 1) * IslamicDaysInYear
-            + Math.Floor((double)((IslamicLeapYearOffset + IslamicLeapYearMultiplier * year) / IslamicLeapYearCycle))
-            + IslamicEpoch - 1;
-    }
-
-    /// <summary>
-    /// Converts a Julian day number to an Islamic date.
-    /// </summary>
-    /// <param name="julianDay">The Julian day number.</param>
-    /// <returns>A tuple containing the Islamic year, month, and day.</returns>
-    private static (int Year, int Month, int Day) JulianDayToIslamic(double julianDay)
-    {
-        julianDay = Math.Floor(julianDay) + HalfDayOffset;
-        var year = (int)Math.Floor((DaysInMonth * (julianDay - IslamicEpoch) + EpochOffset) / YearLength);
-        var month = (int)Math.Min(12, Math.Ceiling((julianDay - (MonthLength + IslamicToJulianDay(year, 1, 1))) / MonthAdjustment) + 1);
-        var day = (int)(julianDay - IslamicToJulianDay(year, month, 1) + 1);
-
-        return (year, month, day);
     }
 
     /// <summary>
@@ -180,7 +149,7 @@ internal static class Converter
         var jdnEndOfYear = PersianToJulianDay(year + 1, 1, 1) - 1;
 
         // Calculate the JDN for the given date
-        var jdn = GregorianTojulianDay(date.Year, date.Month, date.Day);
+        var jdn = GregorianToJulianDay(date.Year, date.Month, date.Day);
 
         var DayOfYear = (int)(jdn - jdnStartOfYear + 1);
         var DaysRemainingInYear = (int)(jdnEndOfYear - jdn);
@@ -224,4 +193,111 @@ internal static class Converter
         return ticks;
     }
 
+    /// <summary>
+    /// Converts an Islamic date to a Julian day number.
+    /// </summary>
+    /// <param name="year">The Islamic year.</param>
+    /// <param name="month">The Islamic month.</param>
+    /// <param name="day">The Islamic day.</param>
+    /// <returns>The Julian day number corresponding to the given Islamic date.</returns>
+    private static double IslamicToJulianDay(int year, int month, int day)
+    {
+        return day
+            + Math.Ceiling(MonthAdjustment * (month - 1))
+            + (year - 1) * IslamicDaysInYear
+            + Math.Floor((double)((IslamicLeapYearOffset + IslamicLeapYearMultiplier * year) / IslamicLeapYearCycle))
+            + IslamicEpoch - 1;
+    }
+
+    /// <summary>
+    /// Converts a Julian day number to an Islamic date.
+    /// </summary>
+    /// <param name="julianDay">The Julian day number.</param>
+    /// <returns>A tuple containing the Islamic year, month, and day.</returns>
+    private static IslamicDateTime JulianDayToIslamic(double julianDay)
+    {
+        julianDay = Math.Floor(julianDay) + HalfDayOffset;
+        var year = (int)Math.Floor((DaysInMonth * (julianDay - IslamicEpoch) + EpochOffset) / YearLength);
+        var month = (int)Math.Min(12, Math.Ceiling((julianDay - (MonthLength + IslamicToJulianDay(year, 1, 1))) / MonthAdjustment) + 1);
+        var day = (int)(julianDay - IslamicToJulianDay(year, month, 1) + 1);
+
+        return new IslamicDateTime(year, month, day);
+    }
+
+    /// <summary>
+    ///     Converts a Gregorian date to a Islamic (Hijri) date.
+    /// </summary>
+    /// <param name="date">The Gregorian date to be converted.</param>
+    /// <returns>An IslamicDateTime object representing the converted Islamic date.</returns>
+    public static IslamicDateTime ConvertToIslamic(DateTime date)
+    {
+        var jd = GregorianToJulianDay(date.Year, date.Month, date.Day);
+        var dtIslamic = JulianDayToIslamic(jd);
+
+        return dtIslamic;
+    }
+
+    /// <summary>
+    /// Converts a date in the Islamic calendar to its equivalent in the Gregorian calendar.
+    /// </summary>
+    /// <param name="year">The year in the Islamic calendar.</param>
+    /// <param name="month">The month in the Islamic calendar.</param>
+    /// <param name="day">The day in the Islamic calendar.</param>
+    /// <param name="hour">The hour of the day.</param>
+    /// <param name="minute">The minute of the hour.</param>
+    /// <param name="second">The second of the minute.</param>
+    /// <param name="millisecond">The millisecond of the second. Defaults to 0 if not provided.</param>
+    /// <returns>
+    /// A DateTime object that represents the equivalent date and time in the Gregorian calendar.
+    /// </returns>
+    internal static DateTime ConvertIslamicToGregorian(int year, int month, int day, int hour, int minute, int second, int millisecond = 0)
+    {
+        var jd = IslamicToJulianDay(year, month, day);
+        var dateOnly = JulianDayToGregorian(jd);
+        var date = new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, hour, minute, second, millisecond);
+        return date;
+    }
+
+    /// <summary>
+    ///     Converts a Persian date to a Islamic (Hijri) date.
+    /// </summary>
+    /// <param name="date">The Persian date to be converted.</param>
+    /// <returns>An IslamicDateTime object representing the converted Islamic date.</returns>
+    internal static IslamicDateTime ConvertPersianToIslamic(int year, int month, int day)
+    {
+        var jd = PersianToJulianDay(year, month, day);
+        var dtIslamic = JulianDayToIslamic(jd);
+
+        return dtIslamic;
+    }
+
+    /// <summary>
+    ///     Converts an Islamic date to a Persian (Hijri) date.
+    /// </summary>
+    /// <param name="date">The Islamic date to be converted.</param>
+    /// <returns>A PersianDateTime representing the converted Persian date.</returns>
+    internal static PersianDateTime ConvertIslamicToPersian(int year, int month, int day)
+    {
+        var jd = IslamicToJulianDay(year, month, day);
+        var dtPersian = JulianDayToPersian(jd);
+
+        return dtPersian;
+    }
+
+    /// <summary>
+    /// Calculates the number of days in a given month of a given year in the Islamic calendar.
+    /// </summary>
+    /// <param name="year">The year in the Islamic calendar.</param>
+    /// <param name="month">The month in the Islamic calendar.</param>
+    /// <returns>The number of days in the specified month of the specified year in the Islamic calendar.</returns>
+    internal static int GetDaysInIslamicMonth(int year, int month)
+    {
+        // Calculate the Julian day of the first day of the current month
+        var firstDayOfCurrentMonth = IslamicToJulianDay(year, month, 1);
+
+        // Calculate the Julian day of the first day of the next month
+        var firstDayOfNextMonth = month == 12 ? IslamicToJulianDay(year + 1, 1, 1) : IslamicToJulianDay(year, month + 1, 1);
+
+        return (int)(firstDayOfNextMonth - firstDayOfCurrentMonth);
+    }
 }
