@@ -1,4 +1,4 @@
-﻿using Persia.Net;
+﻿using System;
 using static Persia.Net.CalendarConstants;
 using static Persia.Net.PersianCalendarConstants;
 
@@ -228,8 +228,6 @@ public partial class PersianDateTime
         return ($"{Year}/{Month:D2}/{Day:D2}").ToPersianString();
     }
 
-    //ToOrdinalWords
-    //ToClockNotation
     /// <summary>
     /// Converts the date to a string in the Persian format with Year and Day in digit and Month in word.
     /// </summary>
@@ -242,6 +240,7 @@ public partial class PersianDateTime
     /// <summary>
     /// Converts the date to a string in the Persian format with Year and Day in digit and Month in word as well as weekday name and time.
     /// </summary>
+    /// <param name="timeVisible">A boolean value that indicates whether to display the time within the current IslamicDateTime.</param>
     /// <returns>برای مثال, یکشنبه ۲۰ اسفند ۱۴۰۲</returns>
     public string ToLongPersianString(bool timeVisible = false)
     {
@@ -430,5 +429,59 @@ public partial class PersianDateTime
             : new PersianDateTime(year, month, day, TimeOnly.FromDateTime(DateTime.Now));
 
         return true;
+    }
+
+    /// <summary>
+    /// Converts a Persian (Solar Hijri) date and time to the equivalent Islamic (Lunar Hijri) date and time.
+    /// </summary>
+    /// <param name="year">The Persian year.</param>
+    /// <param name="month">The Persian month (1 to 12).</param>
+    /// <param name="day">The Persian day of the month.</param>
+    /// <param name="hour">The hour (0 to 23).</param>
+    /// <param name="minute">The minute (0 to 59).</param>
+    /// <param name="second">The second (0 to 59).</param>
+    /// <param name="millisecond">The optional millisecond (0 to 999).</param>
+    /// <returns>An Islamic date and time object representing the converted date and time in the Islamic calendar.</returns>
+    public static IslamicDateTime ToIslamicDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond = 0)
+    {
+        var dtIslamic = Converter.ConvertPersianToIslamic(year, month, day);
+        dtIslamic.SetTime(new TimeOnly(hour, minute, second, millisecond));
+        return dtIslamic;
+    }
+
+    /// <summary>
+    /// Converts a Persian (Solar Hijri) date to the equivalent Islamic (Lunar Hijri) date.
+    /// </summary>
+    /// <param name="year">The Persian year.</param>
+    /// <param name="month">The Persian month (1 to 12).</param>
+    /// <param name="day">The Persian day of the month.</param>
+    /// <returns>An Islamic date object representing the converted date in the Islamic calendar.</returns>
+    public static IslamicDateTime ToIslamicDateOnly(int year, int month, int day)
+    {
+        return Converter.ConvertPersianToIslamic(year, month, day);
+    }
+
+    /// <summary>
+    /// Converts the value of this instance to an Islamic date and time.
+    /// </summary>
+    /// <returns>
+    /// An Islamic date and time that is equivalent to the date and time represented by this instance.
+    /// </returns>
+    public IslamicDateTime ToIslamicDateTime()
+    {
+        var dtIslamic = Converter.ConvertPersianToIslamic(Year, Month, Day);
+        dtIslamic.SetTime(new TimeOnly(Hour, Minute, Second, Millisecond));
+        return dtIslamic;
+    }
+
+    /// <summary>
+    /// Converts the value of this instance to an Islamic date.
+    /// </summary>
+    /// <returns>
+    /// An Islamic date that is equivalent to the date represented by this instance.
+    /// </returns>
+    public IslamicDateTime ToIslamicDateOnly()
+    {
+        return Converter.ConvertPersianToIslamic(Year, Month, Day);
     }
 }
