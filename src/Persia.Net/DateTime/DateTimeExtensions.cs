@@ -1,6 +1,4 @@
-﻿using Persia.Net;
-
-namespace Persia.Net;
+﻿namespace Persia.Net;
 
 public static class DateTimeExtensions
 {
@@ -14,7 +12,6 @@ public static class DateTimeExtensions
         return Converter.ConvertToPersian(date)
             .SetTime(TimeOnly.FromTimeSpan(date.TimeOfDay))
             .SetDayOfWeek((int)date.DayOfWeek);
-        //.GetLeapYearStatus();
     }
 
     /// <summary>
