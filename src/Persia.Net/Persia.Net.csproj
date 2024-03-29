@@ -7,15 +7,15 @@
     <LangVersion>latest</LangVersion>
 
     <Authors>Majid Shahabfar</Authors>
-    <Description>Persia.Net is a versatile class library designed to seamlessly convert dates between Persian, Gregorian, and Arabic (Hijri) calendars.</Description>
+    <Description>Persia.Net is a versatile class library designed to seamlessly convert dates between Persian, Gregorian, and Islamic (Lunar Hijri) calendars.</Description>
     <PackageProjectUrl>https://github.com/shahabfar/Persia.Net</PackageProjectUrl>
     <AssemblyTitle>Persia.Net</AssemblyTitle>
     <AssemblyCompany>Shahabfar</AssemblyCompany>
     <AssemblyProduct>Persia.Net</AssemblyProduct>
     <AssemblyCopyright>Majid Shahabfar 2024</AssemblyCopyright>
-    <AssemblyVersion>4.0.8.1</AssemblyVersion>
-    <FileVersion>4.0.8.1</FileVersion>
-    <ProductVersion>4.0.8.1</ProductVersion>
+    <AssemblyVersion>4.1</AssemblyVersion>
+    <FileVersion>4.1</FileVersion>
+    <ProductVersion>4.1</ProductVersion>
     <PackageIcon>persia-icon.png</PackageIcon>
   </PropertyGroup>
 
