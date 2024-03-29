@@ -266,3 +266,12 @@ var persianDate = islamicDate.ToPersianDateOnly().ToString();
 // Print the Persian date
 Console.WriteLine(persianDate);
 ```
+### Enhanced DateOnly Support in Persia.Net  
+With this enhancement, you can directly convert a `DateOnly` object to a `PersianDateTime` or an `IslamicDateTime` object. This means you no longer need to first convert `DateOnly` to a `DateTime` object before converting to `PersianDateTime` or `IslamicDateTime`. This reduces the steps involved, making your code more efficient and readable.
+
+Here’s an example of how you can now directly convert a `DateOnly` object to a `PersianDateTime`:
+```csharp
+DateOnly dateOnly = // a DateOnly object comes from...;
+PersianDateTime persianDate = dateOnly.ToPersianDateTime();
+```
+All the `DateTime` extensions that have been introduced by Persia.Net have also been extended to the `DateOnly` struct. That is, all the methods and properties you’re accustomed to using with `DateTime` objects are now directly accessible on `DateOnly` objects.
