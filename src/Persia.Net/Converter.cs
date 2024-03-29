@@ -18,6 +18,30 @@ internal static class Converter
         var persianDate = JulianDayToPersian(jd);
 
         // Get the progress of the year for the Persian date
+        var (dayOfYear, daysRemainingInYear) = GetYearProgress(persianDate.Year, DateOnly.FromDateTime(date));
+
+        persianDate.SetYearProgress(dayOfYear, daysRemainingInYear);
+        var daysInMonth = GetDaysInPersianMonth(persianDate.Year, persianDate.Month);
+        persianDate.SetDaysInMonth(daysInMonth);
+        var ticks = CalculatePersianTicks(persianDate);
+        persianDate.SetTicks(ticks);
+        return persianDate;
+    }
+
+    /// <summary>
+    ///     Converts a Gregorian date to a Persian date.
+    /// </summary>
+    /// <param name="date">The Gregorian date to be converted.</param>
+    /// <returns>A PersianDateTime object representing the converted Persian date.</returns>
+    internal static PersianDateTime ConvertToPersian(DateOnly date)
+    {
+        // Convert the Gregorian date to Julian Day Number
+        var jd = GregorianToJulianDay(date.Year, date.Month, date.Day);
+
+        // Convert the Julian Day Number to a Persian date
+        var persianDate = JulianDayToPersian(jd);
+
+        // Get the progress of the year for the Persian date
         var (dayOfYear, daysRemainingInYear) = GetYearProgress(persianDate.Year, date);
 
         persianDate.SetYearProgress(dayOfYear, daysRemainingInYear);
@@ -142,7 +166,7 @@ internal static class Converter
     /// <param name="year">The year in the Persian calendar.</param>
     /// <param name="date">The date for which to calculate the year progress.</param>
     /// <returns>A tuple containing the day of the year and the number of days remaining in the year.</returns>
-    private static (int DayOfYear, int DaysRemainingInYear) GetYearProgress(int year, DateTime date)
+    private static (int DayOfYear, int DaysRemainingInYear) GetYearProgress(int year, DateOnly date)
     {
         // Calculate the JDN (Julian Day Number) for the start and end of the year
         var jdnStartOfYear = PersianToJulianDay(year, 1, 1);
