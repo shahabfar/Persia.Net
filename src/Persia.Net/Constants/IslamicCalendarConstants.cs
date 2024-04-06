@@ -5,10 +5,10 @@ public class IslamicCalendarConstants
     /// <summary>
     /// Month names in Islamic calendar.
     /// </summary>
-    public static readonly string[] Months = ["محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاولی", "جمادی الثانیة", "رجب", "شعبان", "رمضان", "شوال", "ذی قعده", "ذی حجّه"];
+    public static readonly string[] Months = ["محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاولی", "جمادی الثانیة", "رجب", "شعبان", "رمضان", "شوال", "ذو القعدة", "ذو الحجة"];
 
     /// <summary>
     /// Weekday names in Islamic calendar (Arabic)
     /// </summary>
-    public static readonly string[] Weekdays = ["اسبت", "الاحد", "الاثنین", "اثلاثا", "الاربعا", "الخمیس", "اجمعه"];
+    public static readonly string[] Weekdays = ["السبت", "الأحد", "الإثنین", "الثلاثاء", "الأربعاء", "الخمیس", "الجمعة"];
 }

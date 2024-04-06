@@ -13,9 +13,9 @@
     <AssemblyCompany>Shahabfar</AssemblyCompany>
     <AssemblyProduct>Persia.Net</AssemblyProduct>
     <AssemblyCopyright>Majid Shahabfar 2024</AssemblyCopyright>
-    <AssemblyVersion>4.1</AssemblyVersion>
-    <FileVersion>4.1</FileVersion>
-    <ProductVersion>4.1</ProductVersion>
+    <AssemblyVersion>4.1.1</AssemblyVersion>
+    <FileVersion>4.1.1</FileVersion>
+    <ProductVersion>4.1.1</ProductVersion>
     <PackageIcon>persia-icon.png</PackageIcon>
   </PropertyGroup>
 
