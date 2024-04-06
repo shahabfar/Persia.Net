@@ -83,7 +83,7 @@ public class IslamicDateTimeTests
         var convertedDateString = date.ToIslamicDateTime().ToLongArabicString();
 
         // Assert
-        Assert.Equal("الاربعا ١٧ رمضان ١٤٤٥", convertedDateString);
+        Assert.Equal("الأربعاء ١٧ رمضان ١٤٤٥", convertedDateString);
     }
 
     [Fact]
