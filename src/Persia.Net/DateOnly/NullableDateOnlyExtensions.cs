@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Persia.Net;
+﻿namespace Persia.Net;
 
 public static class NullableDateOnlyExtensions
 {
@@ -23,7 +21,7 @@ public static class NullableDateOnlyExtensions
     /// <param name="dateOnly">The date to calculate the date difference from. If null, an <see cref="ArgumentNullException"/> is thrown.</param>
     /// <param name="partsToPrint">The number of time parts to include in the output string (e.g., if 3, it might print years, months, and days).</param>
     /// <returns>بعنوان مثال: ۱۱ ماه و ۳۶۲ روز پیش</returns>
-    public static string HumanizePassedPersianDateTime(this DateOnly? dateOnly, int partsToPrint = 3)
+    public static string? HumanizePassedPersianDateTime(this DateOnly? dateOnly, int partsToPrint = 3)
     {
         if (!dateOnly.HasValue)
             throw new ArgumentNullException(nameof(dateOnly));
@@ -37,7 +35,7 @@ public static class NullableDateOnlyExtensions
     /// <param name="dateOnly">The date to calculate the date time difference from. If null, an <see cref="ArgumentNullException"/> is thrown.</param>
     /// <param name="timeUnit">The unit of time to be used for the calculation. It calculates the total of the given unit time and prints only that unit.</param>
     /// <returns>A string that represents the time difference in total calculated of given unit time in a human-readable format in Persian.</returns>
-    public static string HumanizePassedPersianDateTime(this DateOnly? dateOnly, TimeUnit timeUnit)
+    public static string? HumanizePassedPersianDateTime(this DateOnly? dateOnly, TimeUnit timeUnit)
     {
         if (!dateOnly.HasValue)
             throw new ArgumentNullException(nameof(dateOnly));

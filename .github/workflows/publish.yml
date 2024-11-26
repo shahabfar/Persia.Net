@@ -1,26 +1,34 @@
 name: Publish to NuGet
+
 on:
-  push:
-    branches: [ "master" ]
-    tags:
-      - '*'
+  release:
+    types: [published]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
-    - uses: actions/checkout@v4
+    - name: Check out repository
+      uses: actions/checkout@v4
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: |
+          6.0.x
+          7.0.x
+          8.0.x
+          9.0.x
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore src/Persia.Net/Persia.Net.csproj
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build src/Persia.Net/Persia.Net.csproj --configuration Release --no-restore
+
+    - name: Restore test project dependencies
+      run: dotnet restore tests/Persia.Net.Test/Persia.Net.Test.csproj
 
     - name: Test
       run: dotnet test --no-restore --verbosity normal
@@ -36,8 +44,8 @@ jobs:
         echo "::set-output name=version::$VERSION"
 
     - name: Pack
-      run: dotnet pack --no-build --configuration Release /p:PackageVersion=${{ steps.version.outputs.version }} --output out
+      run: dotnet pack src/Persia.Net/Persia.Net.csproj --no-build --configuration Release /p:PackageVersion=${{ steps.version.outputs.version }} --output nupkg
 
     - name: Push
-      run: dotnet nuget push "out/*.nupkg" --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push "nupkg/*.nupkg" --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 

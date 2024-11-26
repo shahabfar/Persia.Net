@@ -104,9 +104,9 @@ public class IslamicDateTimeTests
 
         Assert.Throws<FormatException>(() => IslamicDateTime.Parse("invalid date"));
         Assert.True(success);
-        Assert.Equal(1445, result.Year);
-        Assert.Equal(09, result.Month);
-        Assert.Equal(17, result.Day);
+        Assert.Equal(1445, result?.Year);
+        Assert.Equal(09, result?.Month);
+        Assert.Equal(17, result?.Day);
         Assert.False(failure);
         Assert.Null(result2);
     }
@@ -115,14 +115,14 @@ public class IslamicDateTimeTests
     public void Test_ConvertIslamicToPersianDate_ReturnCorrectDate()
     {
         // Arrange
-        var dtIslamic = new IslamicDateTime(1445, 09, 18);
+        var dtIslamic = new IslamicDateTime(1446, 05, 23);
 
         // Act
         var convertedDate = dtIslamic.ToPersianDateOnly();
 
         // Assert
-        Assert.Equal(09, convertedDate.Day);
-        Assert.Equal(01, convertedDate.Month);
+        Assert.Equal(05, convertedDate.Day);
+        Assert.Equal(09, convertedDate.Month);
         Assert.Equal(1403, convertedDate.Year);
     }
 }

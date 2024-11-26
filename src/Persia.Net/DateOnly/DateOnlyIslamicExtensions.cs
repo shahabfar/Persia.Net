@@ -1,4 +1,6 @@
-﻿namespace Persia.Net;
+﻿using Persia.Net.Core;
+
+namespace Persia.Net;
 
 public static class DateOnlyIslamicExtensions
 {

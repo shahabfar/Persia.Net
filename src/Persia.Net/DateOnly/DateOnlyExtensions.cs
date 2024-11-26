@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Persia.Net.Core;
 
 namespace Persia.Net;
 
@@ -23,7 +23,7 @@ public static class DateOnlyExtensions
     /// <param name="dateOnly">The date to calculate the date difference from.</param>
     /// <param name="partsToPrint">The number of time parts to include in the output string (e.g., if 3, it might print years, months, and days).</param>
     /// <returns>بعنوان مثال: ۱۱ ماه و ۳۶۲ روز پیش</returns>
-    public static string HumanizePassedPersianDateTime(this DateOnly dateOnly, int partsToPrint = 3)
+    public static string? HumanizePassedPersianDateTime(this DateOnly dateOnly, int partsToPrint = 3)
     {
         var dtPersianNow = ToPersianDateTime(DateOnly.FromDateTime(DateTime.Now));
         var dtPersian = ToPersianDateTime(dateOnly);
@@ -63,7 +63,6 @@ public static class DateOnlyExtensions
             if (!string.IsNullOrEmpty(result))
                 result += " و ";
             result += $"{days} روز";
-            partsToPrint--;
         }
 
         return (result + " پیش").ToPersianString(true);
@@ -75,7 +74,7 @@ public static class DateOnlyExtensions
     /// <param name="dateOnly">The date to calculate the time difference from.</param>
     /// <param name="timeUnit">The unit of time to be used for the calculation. It calculates the total of the given unit time and prints only that unit.</param>
     /// <returns>بعنوان مثال: ۲ روز پیش</returns>
-    public static string HumanizePassedPersianDateTime(this DateOnly dateOnly, TimeUnit timeUnit)
+    public static string? HumanizePassedPersianDateTime(this DateOnly dateOnly, TimeUnit timeUnit)
     {
         var now = DateTime.Now;
         var dtPersianNow = ToPersianDateTime(DateOnly.FromDateTime(now));
@@ -83,7 +82,7 @@ public static class DateOnlyExtensions
 
         var years = dtPersianNow.Year - dtPersian.Year;
         var months = years * 12 + dtPersianNow.Month - dtPersian.Month;
-        var days = (int)(now - dateOnly.ToDateTime(TimeOnly.MinValue)).TotalDays; 
+        var days = (int)(now - dateOnly.ToDateTime(TimeOnly.MinValue)).TotalDays;
 
         var result = "";
 
