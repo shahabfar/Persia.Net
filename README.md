@@ -11,6 +11,7 @@ Persia.Net is a robust class library, meticulously designed to facilitate seamle
 To install Persia.Net, run the following command in the Package Manager Console:
 
 [![Nuget](https://img.shields.io/nuget/v/Persia.Net)](https://www.nuget.org/packages/Persia.Net/)
+[![Nuget](https://img.shields.io/nuget/dt/Persia.Net)](https://www.nuget.org/packages/Persia.Net/)
 
 ```
 PM> Install-Package Persia.Net
@@ -18,6 +19,12 @@ PM> Install-Package Persia.Net
 
 You can also view the [package page](https://www.nuget.org/packages/Persia.Net/) on NuGet.
 
+## New Features in v4.2
+
+With the latest update, Persia.Net now includes the following new features:
+
+- **Upgrade to .NET 9.0**: The package now supports .NET 6.0, 7.0, 8.0 and 9.0, ensuring compatibility with the latest .NET versions.
+- **String to PersianDateTime Conversion**: Convert string representations of Gregorian dates to `PersianDateTime` using the new `ToPersianDateTime` and `TryToPersianDateTime` methods as `String` extensions methods.
 
 # Using Persia.Net
 
