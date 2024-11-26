@@ -2,7 +2,7 @@
 
 public partial class PersianDateTime : IEquatable<PersianDateTime>, IComparable<PersianDateTime>
 {
-    public bool Equals(PersianDateTime other)
+    public bool Equals(PersianDateTime? other)
     {
         if (other is null)
             return false;
@@ -10,7 +10,7 @@ public partial class PersianDateTime : IEquatable<PersianDateTime>, IComparable<
         return Year == other.Year && Month == other.Month && Day == other.Day;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj))
             return false;
@@ -83,7 +83,7 @@ public partial class PersianDateTime : IEquatable<PersianDateTime>, IComparable<
         return left.CompareTo(right) <= 0;
     }
 
-    public int CompareTo(PersianDateTime other)
+    public int CompareTo(PersianDateTime? other)
     {
         if (other is null)
             return 1; // All instances are greater than null

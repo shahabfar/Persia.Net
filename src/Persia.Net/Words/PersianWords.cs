@@ -7,7 +7,7 @@ public static class PersianWords
     public const char RleChar = (char)0x202B;
     public const char PopDirectionalFormatting = (char)0x202C;
 
-    public static string ToPersianString(this object value, bool enableRLE = false)
+    public static string? ToPersianString(this object value, bool enableRLE = false)
     {
         var str = value.ToString();
         if (string.IsNullOrEmpty(str))
@@ -37,7 +37,7 @@ public static class PersianWords
     /// </returns>
     public static string ToPersianNumber(this string num)
     {
-        if (string.IsNullOrWhiteSpace(num)) 
+        if (string.IsNullOrWhiteSpace(num))
             return string.Empty;
 
         return string.Create(num.Length, num, (chars, context) =>
@@ -81,7 +81,7 @@ public static class PersianWords
     /// </returns>
     public static string ToLatinNumber(this string num)
     {
-        if (string.IsNullOrWhiteSpace(num)) 
+        if (string.IsNullOrWhiteSpace(num))
             return string.Empty;
 
         return string.Create(num.Length, num, (chars, context) =>

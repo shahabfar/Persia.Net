@@ -1,4 +1,5 @@
-﻿using static Persia.Net.IslamicCalendarConstants;
+﻿using Persia.Net.Core;
+using static Persia.Net.IslamicCalendarConstants;
 namespace Persia.Net;
 
 
@@ -59,20 +60,20 @@ public class IslamicDateTime
     /// </summary>
     public string DayOfWeekName { get; private set; } = string.Empty;
 
-    /// <summary>
-    /// Gets the current date and time in the Persian calendar.
-    /// </summary>
-    //public static PersianDateTime Now => DateTime.Now.ToPersianDateTime();
+    ///// <summary>
+    ///// Gets the current date and time in the Persian calendar.
+    ///// </summary>
+    ////public static PersianDateTime Now => DateTime.Now.ToPersianDateTime();
 
-    /// <summary>
-    /// Gets the current date and time in the Persian calendar in Coordinated Universal Time (UTC).
-    /// </summary>
-    //public static PersianDateTime UtcNow => DateTime.UtcNow.ToPersianDateTime();
+    ///// <summary>
+    ///// Gets the current date and time in the Persian calendar in Coordinated Universal Time (UTC).
+    ///// </summary>
+    ////public static PersianDateTime UtcNow => DateTime.UtcNow.ToPersianDateTime();
 
-    /// <summary>
-    /// Gets the current date in the Persian calendar.
-    /// </summary>
-    //public static PersianDateTime Today => DateTime.Today.ToPersianDateTime();
+    ///// <summary>
+    ///// Gets the current date in the Persian calendar.
+    ///// </summary>
+    ////public static PersianDateTime Today => DateTime.Today.ToPersianDateTime();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IslamicDateTime"/> class.
@@ -89,7 +90,7 @@ public class IslamicDateTime
         Day = day;
         SetDayOfWeek((int)dt.DayOfWeek);
         DaysInMonth = Converter.GetDaysInIslamicMonth(year, month);
-        MonthName = Months[Month - 1]; 
+        MonthName = Months[Month - 1];
         DayOfWeekName = Weekdays[DayOfWeek];
         Hour = time.Hour;
         Minute = time.Minute;
@@ -255,7 +256,7 @@ public class IslamicDateTime
     /// <returns>
     /// true if the input string was converted successfully; otherwise, false.
     /// </returns>
-    public static bool TryParse(string date, out IslamicDateTime result, bool systemClock = false)
+    public static bool TryParse(string date, out IslamicDateTime? result, bool systemClock = false)
     {
         var parts = date.ToLatinNumber().Split('/');
         if (parts.Length != 3)

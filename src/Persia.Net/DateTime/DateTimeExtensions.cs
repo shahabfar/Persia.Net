@@ -1,4 +1,6 @@
-﻿namespace Persia.Net;
+﻿using Persia.Net.Core;
+
+namespace Persia.Net;
 
 public static class DateTimeExtensions
 {
@@ -20,7 +22,7 @@ public static class DateTimeExtensions
     /// <param name="dateTime">The date to calculate the date time difference from.</param>
     /// <param name="partsToPrint">The number of time parts to include in the output string (e.g., if 3, it might print years, months, and days).</param>
     /// <returns>بعنوان مثال: ۱۱ ماه و ۳۶۲ روز و ۲ ساعت پیش</returns>
-    public static string HumanizePassedPersianDateTime(this DateTime dateTime, int partsToPrint = 3)
+    public static string? HumanizePassedPersianDateTime(this DateTime dateTime, int partsToPrint = 3)
     {
         var now = DateTime.Now;
         var timeSpan = now - dateTime;
@@ -98,7 +100,7 @@ public static class DateTimeExtensions
     /// <param name="dateTime">The date to calculate the time difference from.</param>
     /// <param name="timeUnit">The unit of time to be used for the calculation. It calculates the total of the given unit time and prints only that unit.</param>
     /// <returns>بعنوان مثال: ۲ روز پیش</returns>
-    public static string HumanizePassedPersianDateTime(this DateTime dateTime, TimeUnit timeUnit)
+    public static string? HumanizePassedPersianDateTime(this DateTime dateTime, TimeUnit timeUnit)
     {
         var now = DateTime.Now;
         var dtPersianNow = ToPersianDateTime(now);

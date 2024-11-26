@@ -3,6 +3,11 @@
 internal class CalendarConstants
 {
     /// <summary>
+    ///     The year of the start of the Common Era (Start of migration of Islam prophet), which is 622.
+    /// </summary>
+    internal const int CommonEra = 622;
+
+    /// <summary>
     ///     The Julian Day number of the start of the Gregorian calendar, which is October 15, 1582.
     /// </summary>
     internal const double GregorianEpoch = 1721425.5;
@@ -11,6 +16,16 @@ internal class CalendarConstants
     ///     The Julian Day number of the start of the Persian calendar, which is March 21, 622.
     /// </summary>
     internal const double PersianEpoch = 1948320.5;
+
+    /// <summary>
+    ///     The Julian Day number of the start of the Persian year 475, which is March 20, 1096.
+    /// </summary>
+    internal const double BasePersianEpoch = 2121445.5;
+
+    /// <summary>
+    ///      Base year reference for the Persian calendar.
+    /// </summary>
+    internal const int BasePersianYear = 475;
 
     /// <summary>
     ///     The Julian Day number of the start of the Islamic calendar, which is July 16, 622.
@@ -51,11 +66,6 @@ internal class CalendarConstants
     ///     The number of years in a century.
     /// </summary>
     internal const double Century = 100;
-
-    /// <summary>
-    ///     The Persian year corresponding to the Persian Epoch.
-    /// </summary>
-    internal const int PersianEpochYear = 475;
 
     /// <summary>
     ///     The number of days in a Persian calendar cycle.
@@ -105,12 +115,12 @@ internal class CalendarConstants
     /// <summary>
     ///     The year before the epoch in the Persian calendar.
     /// </summary>
-    internal const int YearBeforeEpoch = 473;
+    internal const int YearBeforeEpoch = 474;
 
     /// <summary>
     ///     The number of months in the first half of a Persian year.
     /// </summary>
-    internal const int FirstHalfMonths = 7;
+    internal const int FirstHalfMonths = 6;
 
     /// <summary>
     ///     The number of days in the first half of a Persian month.

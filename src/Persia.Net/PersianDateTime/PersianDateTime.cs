@@ -1,5 +1,5 @@
-﻿using System;
-using static Persia.Net.CalendarConstants;
+﻿
+using Persia.Net.Core;
 using static Persia.Net.PersianCalendarConstants;
 
 namespace Persia.Net;
@@ -9,17 +9,17 @@ public partial class PersianDateTime
     /// <summary>
     /// Gets the year component of the date.
     /// </summary>
-    public int Year { get; private set; }
+    public int Year { get; }
 
     /// <summary>
     /// Gets the month component of the date.
     /// </summary>
-    public int Month { get; private set; }
+    public int Month { get; }
 
     /// <summary>
     /// Gets the day component of the date.
     /// </summary>
-    public int Day { get; private set; }
+    public int Day { get; }
 
     /// <summary>
     /// Gets the hour component of the time.
@@ -198,16 +198,29 @@ public partial class PersianDateTime
     /// <returns>true if the specified year is a leap year; otherwise, false.</returns>
     public static bool CheckLeapYear(int year)
     {
-        // Group years into cycles of 2820 years each
-        var yearInCycle = year % PersianCalendarGrandCycle;
+        //// Group years into cycles of 2820 years each
+        //var yearInCycle = year % PersianCalendarGrandCycle;
 
-        // Calculate the ordinal number of the year within the cycle
-        var ordinalNumber = yearInCycle % YearsInSmallCycle;
+        //// Calculate the ordinal number of the year within the cycle
+        //var ordinalNumber = yearInCycle % YearsInSmallCycle;
 
-        // Check if the year is evenly divisible by 4
-        var isLeapYear = ordinalNumber % 4 == 0;
+        //// Check if the year is evenly divisible by 4
+        //var isLeapYear = ordinalNumber % 4 == 0;
 
-        return isLeapYear;
+        //return isLeapYear;
+
+        // Adjust for negative or zero years
+        if (year <= 0)
+            year--;
+
+        // Calculate the position within the 33-year cycle
+        var positionInCycle = year % 33;
+
+        // Define the standard leap year positions within the cycle
+        int[] leapYearPositions = { 1, 5, 9, 13, 17, 22, 26, 30 };
+
+        // Check if the position corresponds to a leap year
+        return leapYearPositions.Contains(positionInCycle);
     }
 
     /// <summary>
@@ -223,7 +236,7 @@ public partial class PersianDateTime
     /// Converts the date to a string in the format "yyyy/MM/dd" with Persian numbers.
     /// </summary>
     /// <returns>برای مثال, ۱۴۰۲/۱۲/۲۰.</returns>
-    public string ToShortPersianString()
+    public string? ToShortPersianString()
     {
         return ($"{Year}/{Month:D2}/{Day:D2}").ToPersianString();
     }
@@ -232,7 +245,7 @@ public partial class PersianDateTime
     /// Converts the date to a string in the Persian format with Year and Day in digit and Month in word.
     /// </summary>
     /// <returns>برای مثال, ۲۰ اسفند ۱۴۰۲</returns>
-    public string ToPersianString()
+    public string? ToPersianString()
     {
         return ($"{Day} {Months[Month - 1]} {Year}").ToPersianString(true);
     }
@@ -242,7 +255,7 @@ public partial class PersianDateTime
     /// </summary>
     /// <param name="timeVisible">A boolean value that indicates whether to display the time within the current IslamicDateTime.</param>
     /// <returns>برای مثال, یکشنبه ۲۰ اسفند ۱۴۰۲</returns>
-    public string ToLongPersianString(bool timeVisible = false)
+    public string? ToLongPersianString(bool timeVisible = false)
     {
         return timeVisible
             ? ($"{Hour:D2}:{Minute:D2} {DayOfWeekName} {Day} {Months[Month - 1]} {Year}، ساعت ").ToPersianString()
@@ -253,7 +266,7 @@ public partial class PersianDateTime
     /// Converts the date to a string in the Persian format with Year in digit and Day and Month in words.
     /// </summary>
     /// <returns>برای مثال, بیستم اسفند ۱۴۰۲</returns>
-    public string ToPersianDayMonthString()
+    public string? ToPersianDayMonthString()
     {
         return ($"{Year} {Days[Day - 1]} {Months[Month - 1]}").ToPersianString();
     }
@@ -262,7 +275,7 @@ public partial class PersianDateTime
     /// Converts the date to a string in the Persian as well as week day name.
     /// </summary>
     /// <returns>برای مثال, یکشنبه ۱۴۰۲/۱۲/۲۰</returns>
-    public string ToPersianWeekdayString()
+    public string? ToPersianWeekdayString()
     {
         return ($"{Year}/{Month:D2}/{Day:D2} " + DayOfWeekName).ToPersianString();
     }
@@ -359,7 +372,7 @@ public partial class PersianDateTime
     /// <returns>
     /// A PersianDateTime that is the sum of the date and months.
     /// </returns>
-    public  PersianDateTime AddMonths(int months)
+    public PersianDateTime AddMonths(int months)
     {
         var totalMonths = Month + months;
         var year = Year + totalMonths / 12;
@@ -377,7 +390,7 @@ public partial class PersianDateTime
     /// <summary>
     /// Converts the specified string representation of a date to its PersianDateTime equivalent.
     /// </summary>
-    /// <param name="date">A string containing a date to convert. Expected format is 'yyyy/MM/dd'.</param>
+    /// <param name="date">A string containing a date to convert. Expected format is 'yyyy/MM/dd' in Persian date.</param>
     /// <param name="systemClock">A boolean value that indicates whether to use the current system time. If true, the current system time is used; otherwise, the time is set to 00:00:00.</param>
     /// <returns>
     /// A PersianDateTime equivalent to the date contained in the input string.
@@ -393,21 +406,21 @@ public partial class PersianDateTime
         var month = int.Parse(parts[1]);
         var day = int.Parse(parts[2]);
 
-        return !systemClock 
-            ? new PersianDateTime(year, month, day) 
+        return !systemClock
+            ? new PersianDateTime(year, month, day)
             : new PersianDateTime(year, month, day, TimeOnly.FromDateTime(DateTime.Now));
     }
 
     /// <summary>
     /// Tries to convert the specified string representation of a date to its PersianDateTime equivalent, and returns a value that indicates whether the conversion succeeded.
     /// </summary>
-    /// <param name="date">A string containing a date to convert. Expected format is 'yyyy/MM/dd'.</param>
+    /// <param name="date">A string containing a date to convert. Expected format is 'yyyy/MM/dd' in Persian date.</param>
     /// <param name="result">When this method returns, contains the PersianDateTime equivalent to the date contained in the input string, if the conversion succeeded, or null if the conversion failed. The conversion fails if the input string is not in the correct format, or represents a date that is not possible in the Persian calendar. This parameter is passed uninitialized.</param>
     /// <param name="systemClock">A boolean value that indicates whether to use the current system time. If true, the current system time is used; otherwise, the time is set to 00:00:00.</param>
     /// <returns>
     /// true if the input string was converted successfully; otherwise, false.
     /// </returns>
-    public static bool TryParse(string date, out PersianDateTime result, bool systemClock = false)
+    public static bool TryParse(string date, out PersianDateTime? result, bool systemClock = false)
     {
         var parts = date.ToLatinNumber().Split('/');
         if (parts.Length != 3)
