@@ -28,7 +28,7 @@ jobs:
       run: dotnet build src/Persia.Net/Persia.Net.csproj --configuration Release --no-restore
 
     - name: Restore test project dependencies
-      run: dotnet restore tests/Persia.Net.Test/Persia.Net.Test.csproj
+      run: dotnet restore src/Persia.Net.Test/Persia.Net.Test.csproj
 
     - name: Test
       run: dotnet test --no-restore --verbosity normal
