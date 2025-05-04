@@ -40,7 +40,12 @@ internal static class Converter
 
     internal static DateTime ConvertToGregorian(int year, int month, int day, int hour, int minute, int second, int millisecond = 0)
     {
-        var jd = persian_to_jd(year, month, day);
+        var maxDays = GetDaysInPersianMonth(year, month);
+        if (day > maxDays)
+            throw new ArgumentException($"Day {day} is invalid for month {month} in year {year} (max {maxDays} days).");
+
+        //var jd = persian_to_jd(year, month, day);
+        var jd = PersianToJulianDay(year, month, day);
         var dateOnly = JulianDayToGregorian(jd);
         return new DateTime(dateOnly.Year, dateOnly.Month, dateOnly.Day, hour, minute, second, millisecond);
     }
@@ -69,22 +74,49 @@ internal static class Converter
     /// <returns>A PersianDateOnly object representing the converted Persian date.</returns>
     private static PersianDateTime JulianDayToPersian(double julianDay)
     {
-        var depoch = julianDay - PersianToJulianDay(BasePersianYear, 1, 1);
-        var completeCycles = Math.Floor(depoch / CycleDays);
-        var yearsIntoCurrentCycle = depoch % CycleDays;
-        var yearsInCurrentCycle = CalculateYearsInCurrentCycle(yearsIntoCurrentCycle);
+        // shift to midnight and strip fraction
+        var Z = Math.Floor(julianDay + 0.5);
 
-        var year = (int)(yearsInCurrentCycle + YearsInCycle * completeCycles + EpochAdjustment);
-        if (year <= 0)
-            year--;
+        // days since the Persian civil epoch (midnight 1 Farvardin 1, JDN 1948319.5)
+        var days = Z - 1_948_319.5;
 
-        var dayOfYear = julianDay - PersianToJulianDay(year, 1, 1) + 1;
-        var month = dayOfYear <= DaysInHalfYear ? (int)Math.Ceiling(dayOfYear / 31) : (int)Math.Ceiling((dayOfYear - 6) / 30);
-        var day = (int)(julianDay - PersianToJulianDay(year, month, 1)) + 1;
-        year += (int)EpochAdjustment;
+        // how many complete 33-year cycles?
+        var cycles = (long)(days / (33 * DaysInYear + 8));
+        days -= cycles * (33 * DaysInYear + 8);
+
+        // break out the year‐within‐cycle
+        //    We need the smallest y such that days < y*365 + leapDaysBefore(y)
+        var yearInCycle = 0;
+        for (var i = 0; i < 33; i++)
+        {
+            var leapDays = LeapIndices.Count(r => r <= i);
+            if (i * DaysInYear + leapDays > days)
+                break;
+            yearInCycle = i;
+        }
+
+        days -= yearInCycle * DaysInYear + LeapIndices.Count(r => r <= yearInCycle);
+
+        var year = (int)(cycles * 33 + yearInCycle + 1);
+
+        // now days is the day‐of‐year (0‐based)
+        var dayOfYear = (int)days;   // 0 … 365
+
+        // figure out month and day
+        var month = dayOfYear < DaysInHalfYear
+            ? dayOfYear / DaysInFirstHalfMonth + 1
+            : (dayOfYear - DaysInHalfYear) / DaysInSecondHalfMonth + 7;
+
+        var day = dayOfYear
+                  - (month <= FirstHalfMonths
+                      ? (month - 1) * DaysInFirstHalfMonth
+                      : FirstHalfMonths * DaysInFirstHalfMonth + (month - 7) * DaysInSecondHalfMonth)
+                  + 1;
 
         return new PersianDateTime(year, month, day);
     }
+
+    private static readonly int[] LeapIndices = [1, 5, 9, 13, 17, 22, 26, 30];
 
     /// <summary>
     ///     Converts a Persian date to a Julian Day number.
@@ -95,20 +127,28 @@ internal static class Converter
     /// <returns>The Julian Day number corresponding to the input Persian date.</returns>
     private static double PersianToJulianDay(int year, int month, int day)
     {
-        float YearsSincePersianEpoch = year - (year >= 0 ? BasePersianYear - 1 : BasePersianYear - 2);
-        var PersianYearAdjustedToEpoch = BasePersianYear - 1 + YearsSincePersianEpoch % YearsInCycle;
+        long y = year - 1;                    //  year 1 starts the count
+        var cycles33 = y / 33;                      //  complete 33‑year cycles
+        var yearInCycle = (int)(y % 33);               //  0 … 32 inside the cycle
 
-        return day +
-               (month <= FirstHalfMonths + 1 ? (month - 1) * DaysInFirstHalfMonth : (month - 1) * DaysInSecondHalfMonth + FirstHalfToSecondHalfDayDifference)
-               + Math.Floor((PersianYearAdjustedToEpoch * LeapYearFactor - LeapYearSubtractor) / DayFactor)
-               + (PersianYearAdjustedToEpoch - 1) * DaysInYear + Math.Floor(YearsSincePersianEpoch / YearsInCycle) * CycleDays + (BasePersianEpoch - 1);
-    }
+        //  8 leap years in each 33‑year cycle
+        var days = cycles33 * (33 * DaysInYear + 8);
 
-    private static double CalculateYearsInCurrentCycle(double yearsIntoCurrentCycle)
-    {
-        return Math.Abs(yearsIntoCurrentCycle - CycleEndDays) < Tolerance
-            ? YearsInCycle
-            : Math.Floor((YearFactor * Math.Floor(yearsIntoCurrentCycle / DaysInLeapYear) + DayFactor * (yearsIntoCurrentCycle % DaysInLeapYear) + 2815) / CycleFactor) + Math.Floor(yearsIntoCurrentCycle / DaysInLeapYear) + 1;
+        // days in the incomplete cycle before this year
+        var leapDaysInCycle = LeapIndices.TakeWhile(idx => idx <= yearInCycle).Count();
+        days += yearInCycle * DaysInYear + leapDaysInCycle;
+
+        // days contributed by complete months before <month> 
+        if (month <= FirstHalfMonths)
+            days += (month - 1) * DaysInFirstHalfMonth;         // Farvardin … Shahrivar
+        else
+            days += FirstHalfMonths * DaysInFirstHalfMonth + (month - 7) * DaysInSecondHalfMonth;     // Mehr … Esfand 
+
+        // add the day number and shift to the epoch 
+        days += day - 1;
+
+        // Persian civil epoch: midnight that begins 1 Farvardin 1  (JD 1948319.5)
+        return days + 1_948_319.5;
     }
 
     /// <summary>
@@ -128,23 +168,21 @@ internal static class Converter
     /// <returns>A DateOnly object representing the converted Gregorian date.</returns>
     private static DateOnly JulianDayToGregorian(double julianDay)
     {
-        var wholeJulianDay = Math.Floor(julianDay - 0.5) + 0.5;
-        var daysSinceEpoch = wholeJulianDay - GregorianEpoch;
-        var quadricent = Math.Floor(daysSinceEpoch / DaysIn400Years);
-        var daysInCurrentLeapYearCycle = daysSinceEpoch % DaysIn400Years;
-        var numberOfCompleteCenturies = Math.Floor(daysInCurrentLeapYearCycle / DaysInCentury);
-        var daysInCurrentCentury = daysInCurrentLeapYearCycle % DaysInCentury;
-        var numberOfCompleteLeapYearFrequencies = Math.Floor(daysInCurrentCentury / DaysIn4YearCycle);
-        var daysInCurrentLeapYearFrequency = daysInCurrentCentury % DaysIn4YearCycle;
-        var yearIndexInCurrentLeapYearFrequency = Math.Floor(daysInCurrentLeapYearFrequency / DaysInYear);
-        var year = (int)(quadricent * LeapYearCycle + numberOfCompleteCenturies * Century + numberOfCompleteLeapYearFrequencies * LeapYearFrequency + yearIndexInCurrentLeapYearFrequency);
-        if (!(Math.Abs(numberOfCompleteCenturies - 4) < Tolerance || Math.Abs(yearIndexInCurrentLeapYearFrequency - 4) < Tolerance))
-            year++;
+        // shift to midnight and strip the fraction
+        var Z = Math.Floor(julianDay + 0.5);
+        var A = Z;
 
-        var dayOfYear = wholeJulianDay - GregorianToJulianDay(year, 1, 1);
-        float leapYearAdjustment = wholeJulianDay < GregorianToJulianDay(year, 3, 1) ? 0 : IsGregorianLeapYear(year) ? 1 : 2;
-        var month = (int)Math.Floor(((dayOfYear + leapYearAdjustment) * 12 + MonthCalculationOffset) / MonthFactorMultiplier);
-        var day = (int)(wholeJulianDay - GregorianToJulianDay(year, month, 1) + 1);
+        var alpha = Math.Floor((A - GregorianReformPivot) / DaysPerGregorianCentury);
+        A += 1 + alpha - Math.Floor(alpha / 4);
+
+        var B = A + JulianConversionBaseOffset;
+        var C = Math.Floor((B - JulianYearOffset) / JulianYearDays);
+        var D = Math.Floor(JulianYearDays * C);
+        var E = Math.Floor((B - D) / MonthExtractionFactor);
+
+        var day = (int)(B - D - Math.Floor(MonthExtractionFactor * E));
+        var month = (int)(E < 14 ? E - 1 : E - 13);
+        var year = (int)(month > 2 ? C - YearOffsetAfterFebruary : C - YearOffsetBeforeMarch);
 
         return new DateOnly(year, month, day);
     }
@@ -158,8 +196,8 @@ internal static class Converter
     private static (int DayOfYear, int DaysRemainingInYear) GetYearProgress(int year, DateOnly date)
     {
         // Calculate the JDN (Julian Day Number) for the start and end of the year
-        var jdnStartOfYear = persian_to_jd(year, 1, 1);
-        var jdnEndOfYear = persian_to_jd(year + 1, 1, 1) - 1;
+        var jdnStartOfYear = PersianToJulianDay(year, 1, 1);
+        var jdnEndOfYear = PersianToJulianDay(year + 1, 1, 1) - 1;
 
         // Calculate the JDN for the given date
         var jdn = GregorianToJulianDay(date.Year, date.Month, date.Day);
@@ -178,15 +216,12 @@ internal static class Converter
     /// <returns>The number of days in the specified month of the specified year in the Persian calendar.</returns>
     private static int GetDaysInPersianMonth(int year, int month)
     {
-        if (month < 1 || month > 12)
+        if (month is < 1 or > 12)
             throw new ArgumentOutOfRangeException(nameof(month), "Month must be between 1 and 12.");
 
-        if (month <= 6)
-            return 31;
-        else if (month <= 11)
-            return 30;
-        else
-            return IsPersianLeapYear(year) ? 30 : 29;
+        return month <= 6 ? 31 :
+            month <= 11 ? 30 :
+            IsPersianLeapYear(year) ? 30 : 29;
     }
 
     private static bool IsPersianLeapYear(int year)
@@ -198,7 +233,7 @@ internal static class Converter
         var positionInCycle = year % 33;
 
         // Define the standard leap year positions within the cycle
-        int[] leapYearPositions = { 1, 5, 9, 13, 17, 22, 26, 30 };
+        int[] leapYearPositions = [1, 5, 9, 13, 17, 22, 26, 30];
 
         // Check if the position corresponds to a leap year
         return leapYearPositions.Contains(positionInCycle);
@@ -235,7 +270,7 @@ internal static class Converter
         return day
             + Math.Ceiling(MonthAdjustment * (month - 1))
             + (year - 1) * IslamicDaysInYear
-            + Math.Floor((double)((IslamicLeapYearOffset + IslamicLeapYearMultiplier * year) / IslamicLeapYearCycle))
+            + Math.Floor((IslamicLeapYearOffset + IslamicLeapYearMultiplier * year) / (double)IslamicLeapYearCycle)
             + IslamicEpoch - 1;
     }
 
@@ -289,23 +324,32 @@ internal static class Converter
     }
 
     /// <summary>
-    ///     Converts a Persian date to a Islamic (Hijri) date.
+    /// Converts a Persian (Solar Hijri) date to the equivalent Islamic (Lunar Hijri) date.
     /// </summary>
-    /// <param name="date">The Persian date to be converted.</param>
-    /// <returns>An IslamicDateTime object representing the converted Islamic date.</returns>
+    /// <param name="year">The year in the Persian calendar.</param>
+    /// <param name="month">The month in the Persian calendar (1 to 12).</param>
+    /// <param name="day">The day in the Persian calendar.</param>
+    /// <returns>
+    /// An <see cref="IslamicDateTime"/> object representing the equivalent date in the Islamic calendar.
+    /// </returns>
     internal static IslamicDateTime ConvertPersianToIslamic(int year, int month, int day)
     {
-        var jd = persian_to_jd(year, month, day);
+        //var jd = persian_to_jd(year, month, day);
+        var jd = PersianToJulianDay(year, month, day);
         var dtIslamic = JulianDayToIslamic(jd);
 
         return dtIslamic;
     }
 
     /// <summary>
-    ///     Converts an Islamic date to a Persian (Hijri) date.
+    /// Converts an Islamic (Lunar Hijri) date to a Persian (Solar Hijri) date.
     /// </summary>
-    /// <param name="date">The Islamic date to be converted.</param>
-    /// <returns>A PersianDateTime representing the converted Persian date.</returns>
+    /// <param name="year">The year in the Islamic calendar.</param>
+    /// <param name="month">The month in the Islamic calendar (1 to 12).</param>
+    /// <param name="day">The day in the Islamic calendar.</param>
+    /// <returns>
+    /// A <see cref="PersianDateTime"/> object representing the equivalent date in the Persian calendar.
+    /// </returns>
     internal static PersianDateTime ConvertIslamicToPersian(int year, int month, int day)
     {
         var jd = IslamicToJulianDay(year, month, day);
@@ -329,15 +373,5 @@ internal static class Converter
         var firstDayOfNextMonth = month == 12 ? IslamicToJulianDay(year + 1, 1, 1) : IslamicToJulianDay(year, month + 1, 1);
 
         return (int)(firstDayOfNextMonth - firstDayOfCurrentMonth);
-    }
-
-    private static double persian_to_jd(int year, int month, int day)
-    {
-        float epbase = year - (year >= 0 ? 474 : 473);
-        var epyear = 474 + (epbase % YearsInCycle);
-
-        return day +
-               (month <= FirstHalfMonths ? (month - 1) * 31 : (month - 1) * 30 + 6) + (float)Math.Floor((epyear * LeapYearFactor - LeapYearSubtractor) / DayFactor) +
-               (epyear - 1) * DaysInYear + (float)Math.Floor(epbase / YearsInCycle) * CycleDays + (PersianEpoch - 1);
     }
 }

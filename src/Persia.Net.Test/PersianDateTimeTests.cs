@@ -114,23 +114,46 @@ public class PersianDateTimeTests
         Assert.Equal("جمعه ۳ فروردین ۱۴۰۳", convertedDateString);
     }
 
-    [Fact]
-    public void Test_ConvertToDateTime_ReturnCorrectDate()
+    //[Fact]
+    //public void Test_ConvertToDateTime_ReturnCorrectDate()
+    //{
+    //    // Arrange
+    //    const int persianYear = 1355;
+    //    const int persianMonth = 11;
+    //    const int persianDay = 19;
+
+    //    // Act
+    //    var date = PersianDateTime.ToDateTime(persianYear, persianMonth, persianDay).Date;
+    //    var dateOnly = PersianDateTime.ToDateOnly(persianYear, persianMonth, persianDay);
+
+    //    // Assert
+    //    Assert.Equal(new DateTime(2025, 03, 26).Date, date);
+    //    Assert.Equal(new DateOnly(2025, 03, 26), dateOnly);
+    //}
+
+    [Theory]
+    [InlineData(1355, 11, 19, 08, 02, 1977)]
+    [InlineData(1404, 1, 1, 21, 03, 2025)]
+    [InlineData(1403, 12, 30, 20, 03, 2025)]
+    [InlineData(1407, 01, 01, 20, 03, 2028)]
+    [InlineData(1407, 12, 29, 19, 03, 2029)]
+    [InlineData(1408, 01, 01, 20, 03, 2029)]
+    [InlineData(1408, 12, 30, 20, 03, 2030)]
+    [InlineData(1412, 12, 30, 20, 03, 2034)]
+    public void Test_ConvertToDateTime_ReturnCorrectDate(int year, int month, int day, int expectedDay, int expectedMonth, int expectedYear)
     {
         // Arrange
-        const int persianYear = 1403;
-        const int persianMonth = 01;
-        const int persianDay = 01;
+        //DateOnly? nullableDate = new DateOnly(year, month, day);
+        //DateOnly nonNullableDate = new DateOnly(year, month, day);
 
         // Act
-        var date = PersianDateTime.ToDateTime(persianYear, persianMonth, persianDay).Date;
-        var dateOnly = PersianDateTime.ToDateOnly(persianYear, persianMonth, persianDay);
+        var date = PersianDateTime.ToDateTime(year, month, day).Date;
+        var dateOnly = PersianDateTime.ToDateOnly(year, month, day);
 
         // Assert
-        Assert.Equal(new DateTime(2024, 03, 20).Date, date);
-        Assert.Equal(new DateOnly(2024, 03, 20), dateOnly);
+        Assert.Equal(new DateTime(expectedYear, expectedMonth, expectedDay).Date, date);
+        Assert.Equal(new DateOnly(expectedYear, expectedMonth, expectedDay), dateOnly);
     }
-
     [Fact]
     public void Test_IsGivenPersianYearIsLeap_ReturnCorrectDate()
     {
