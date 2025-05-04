@@ -3,11 +3,6 @@
 internal class CalendarConstants
 {
     /// <summary>
-    ///     The year of the start of the Common Era (Start of migration of Islam prophet), which is 622.
-    /// </summary>
-    internal const int CommonEra = 622;
-
-    /// <summary>
     ///     The Julian Day number of the start of the Gregorian calendar, which is October 15, 1582.
     /// </summary>
     internal const double GregorianEpoch = 1721425.5;
@@ -18,14 +13,9 @@ internal class CalendarConstants
     internal const double PersianEpoch = 1948320.5;
 
     /// <summary>
-    ///     The Julian Day number of the start of the Persian year 475, which is March 20, 1096.
+    /// Pivot value for the Gregorian reform adjustment (used in alpha calculation).
     /// </summary>
-    internal const double BasePersianEpoch = 2121445.5;
-
-    /// <summary>
-    ///      Base year reference for the Persian calendar.
-    /// </summary>
-    internal const int BasePersianYear = 475;
+    internal const double GregorianReformPivot = 1867216.25;
 
     /// <summary>
     ///     The Julian Day number of the start of the Islamic calendar, which is July 16, 622.
@@ -40,7 +30,7 @@ internal class CalendarConstants
     /// <summary>
     ///     The number of days in a non-leap year.
     /// </summary>
-    internal const double DaysInYear = 365;
+    internal const int DaysInYear = 365;
 
     /// <summary>
     ///     The number of years in the Gregorian calendar's leap year cycle.
@@ -66,11 +56,6 @@ internal class CalendarConstants
     ///     The number of years in a century.
     /// </summary>
     internal const double Century = 100;
-
-    /// <summary>
-    ///     The number of days in a Persian calendar cycle.
-    /// </summary>
-    internal const double CycleDays = 1029983;
 
     /// <summary>
     ///     The number of days at the end of a Persian calendar cycle.
@@ -103,19 +88,9 @@ internal class CalendarConstants
     internal const double CycleFactor = 1028522;
 
     /// <summary>
-    ///     An adjustment made to the epoch in Persian calendar calculations.
-    /// </summary>
-    internal const double EpochAdjustment = 474;
-
-    /// <summary>
     ///     The number of days in the first half of a Persian year.
     /// </summary>
-    internal const double DaysInHalfYear = 186;
-
-    /// <summary>
-    ///     The year before the epoch in the Persian calendar.
-    /// </summary>
-    internal const int YearBeforeEpoch = 474;
+    internal const int DaysInHalfYear = 186;
 
     /// <summary>
     ///     The number of months in the first half of a Persian year.
@@ -128,24 +103,9 @@ internal class CalendarConstants
     internal const int DaysInFirstHalfMonth = 31;
 
     /// <summary>
-    ///     A factor used in Persian calendar leap year calculations.
-    /// </summary>
-    internal const int LeapYearFactor = 682;
-
-    /// <summary>
-    ///     A value subtracted in Persian calendar leap year calculations.
-    /// </summary>
-    internal const int LeapYearSubtractor = 110;
-
-    /// <summary>
     ///     The number of days in the second half of a Persian month.
     /// </summary>
     internal const int DaysInSecondHalfMonth = 30;
-
-    /// <summary>
-    ///     The difference in days between the first half and second half of a Persian month.
-    /// </summary>
-    internal const int FirstHalfToSecondHalfDayDifference = 6;
 
     /// <summary>
     /// Represents the offset used to adjust the Julian day number to start from the middle of the day.
@@ -198,37 +158,37 @@ internal class CalendarConstants
     internal const int IslamicLeapYearMultiplier = 11;
 
     /// <summary>
-    /// The total number of days in a 400-year cycle of the Gregorian calendar.
+    /// Average number of days in a Gregorian “century” (100 × 365.2425).
     /// </summary>
-    internal const int DaysIn400Years = 146097;
+    internal const double DaysPerGregorianCentury = 36524.25;
 
     /// <summary>
-    /// The total number of days in a century (100 years) of the Gregorian calendar.
+    /// Offset to align the intermediate count so that March = month 1 in the algorithm.
     /// </summary>
-    internal const int DaysInCentury = 36524;
+    internal const int JulianConversionBaseOffset = 1524;
 
     /// <summary>
-    /// The total number of days in a 4-year cycle of the Gregorian calendar, including one leap year.
+    /// Companion offset for extracting the year from the day count.
     /// </summary>
-    internal const int DaysIn4YearCycle = 1461;
+    internal const double JulianYearOffset = 122.1;
 
     /// <summary>
-    /// The offset used in the calculation of the month from a Julian day number.
+    /// Average length of a Julian year, used when breaking out the year from days.
     /// </summary>
-    internal const int MonthCalculationOffset = 373;
+    internal const double JulianYearDays = 365.25;
 
     /// <summary>
-    /// The length of a complete grand cycle in the Persian calendar, consisting of 2820 years.
+    /// Factor for converting the remaining days into a month index.
     /// </summary>
-    internal const int PersianCalendarGrandCycle = 2820;
+    internal const double MonthExtractionFactor = 30.6001;
 
     /// <summary>
-    /// The number of years in the smaller cycles within the 2820-year grand cycle of the Persian calendar.
+    /// Year offset for dates in March–December when computing the final year.
     /// </summary>
-    internal const int YearsInSmallCycle = 120;
+    internal const int YearOffsetAfterFebruary = 4716;
 
     /// <summary>
-    /// The index of the last year in the smaller 120-year cycle of the Persian calendar.
+    /// Year offset for dates in January–February when computing the final year.
     /// </summary>
-    internal const int LastYearInSmallCycleIndex = 119;
+    internal const int YearOffsetBeforeMarch = 4715;
 }
